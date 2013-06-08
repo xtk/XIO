@@ -33,3 +33,7 @@ xtk.js
 # node
 node_modules
 
+# binary files
+bin
+
+
