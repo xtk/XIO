@@ -1,1 +1,3 @@
-goog.require('X.io.parserNII');
+(function() {
+  goog.require('X.io.parserNII');
+})();

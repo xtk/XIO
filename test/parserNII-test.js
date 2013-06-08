@@ -5,8 +5,6 @@
 
       var parser = new X.io.parserNII();
 
-      console.log('use parser:', parser);
-
       this.parser = parser;
 
     },
@@ -15,4 +13,4 @@
     }
   });
 
-});
+})();

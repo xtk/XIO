@@ -1,10 +1,16 @@
 <html>
 <head>
-<script type="text/javascript" src="../lib/google-closure-library/closure/goog/base.js"></script>
+<script type="text/javascript"
+	src="../lib/google-closure-library/closure/goog/base.js"></script>
 <script type="text/javascript" src="../xio-deps.js"></script>
-<script>
+<script type="text/javascript" src="requires.js"></script>
+<script type="text/javascript">
 
-goog.require('X.io.parserNII');
+        var parser = new X.io.parserNII();
+
+        this.parser = parser;
+
+        console.log(this.parser.classname, 'io.parserNII');
 
 </script>
 </head>
