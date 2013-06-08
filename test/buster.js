@@ -6,7 +6,7 @@ var config = module.exports;
 config['xio_development'] = {
   rootPath : "../",
   environment : "browser",
-  resources : [ "src/**/*.js" ],
+  resources : [ "lib/google-closure-library/closure/goog/**/*.js", "src/**/*.js" ],
   libs : [ "lib/google-closure-library/closure/goog/base.js",
       "lib/google-closure-library/closure/goog/deps.js", "xio-deps.js",
       "test/requires.js" ],
