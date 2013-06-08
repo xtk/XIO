@@ -8,7 +8,7 @@
   },
   "name": "XIO",
   "description": "IO components of the X toolkit",
-  "version": "0.1",
+  "version": "0.0.1",
   "main": "./bin/node-xio.js",
   "homepage": "https://github.com/xtk/XIO",
   "repository": {
