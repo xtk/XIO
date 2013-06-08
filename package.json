@@ -1,0 +1,29 @@
+{
+  "author": {
+    "name": "Daniel Haehn"
+  },
+  "contributors": {
+    "name": "Daniel Haehn",
+    "email": "daniel.haehn@childrens.harvard.edu"
+  },
+  "name": "XIO",
+  "description": "IO components of the X toolkit",
+  "version": "0.1",
+  "main": "./bin/node-xio.js",
+  "homepage": "https://github.com/xtk/XIO",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/xtk/XIO.git"
+  },
+  "dependencies" : {
+    "buster" : ">=0.6.3"
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  },
+  "scripts" : {
+    "test" : "node_modules/.bin/buster-test"
+  }
+}
