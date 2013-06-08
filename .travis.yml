@@ -18,6 +18,7 @@ before_script:
 
 install:
   - "ant"
+  - "npm install"
 
 script:
   - "npm test"
