@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="project" default="all">
+
+	<property name="software-short" value="xio" />
+	
+	
+	
+	<property name="level" value="ADVANCED_OPTIMIZATIONS" />
+
+	<property name="basedir" location="." />
+
+	<property name="src" value="${basedir}/src" />
+	<property name="lib" value="${basedir}/lib" />
+	<property name="bin" value="${basedir}/bin" />
+
+	<property name="closure-compiler" value="${lib}/google-closure-compiler/compiler.jar" />
+	<property name="closure-library" value="${lib}/google-closure-library/closure" />
+
+	<property name="closure-library-base" value="${closure-library}/goog/base.js" />
+	<property name="closure-library-depswriter" value="${closure-library}/bin/build/depswriter.py" />
+	<property name="dependency-file" value="${software-short}-deps.js" />
+
+
+	<loadfile property="license" srcfile="./LICENSE.min" />
+
+	<target name="prebuild" description="Performs pre-build steps.">
+		<mkdir dir="${bin}" />
+	</target>
+
+	<!-- deps.js file generation for development -->
+	<target name="deps" description="Generates a dependency file for development.">
+		<exec executable="python" failonerror="true">
+			<arg line="${closure-library-depswriter}" />
+			<arg line="--root_with_prefix=&quot;. ..&quot;" />
+			<arg line="--output_file=${dependency-file}" />
+		</exec>
+		<pathconvert property="srcfiles" pathsep=" ">
+			<map from="${basedir}" to="--js ." />
+			<fileset dir="${src}" includes="**/*.js" />
+		</pathconvert>
+		<echo message="${srcfiles}" />
+
+	</target>
+
+	<!-- compiler help -->
+	<target name="help">
+		<java jar="${compiler}" fork="true" failonerror="true">
+			<arg line="--help" />
+		</java>
+	</target>
+
+	<!-- Build everything. -->
+	<target name="all" depends="" />
+
+	<!-- Delete old build files. -->
+	<target name="clean">
+		<delete file="${depend}" />
+		<delete dir="${bin}" />
+	</target>
+
+	<!-- Rebuild all. -->
+	<target name="rebuild" depends="clean,all" />
+
+</project>
+<!-- vim: set expandtab ts=2 sw=2: -->
