@@ -2,9 +2,9 @@
 <project name="project" default="all">
 
 	<property name="software-short" value="xio" />
-	
-	
-	
+
+
+
 	<property name="level" value="ADVANCED_OPTIMIZATIONS" />
 
 	<property name="basedir" location="." />
@@ -15,10 +15,12 @@
 
 	<property name="closure-compiler" value="${lib}/google-closure-compiler/compiler.jar" />
 	<property name="closure-library" value="${lib}/google-closure-library/closure" />
-
-	<property name="closure-library-base" value="${closure-library}/goog/base.js" />
+	<property name="closure-library-deps" value="${closure-library}/goog/deps.js" />
 	<property name="closure-library-depswriter" value="${closure-library}/bin/build/depswriter.py" />
+	<property name="closure-library-builder" value="${closure-library}/bin/build/closurebuilder.py" />
+
 	<property name="dependency-file" value="${software-short}-deps.js" />
+
 
 
 	<loadfile property="license" srcfile="./LICENSE.min" />
@@ -27,34 +29,43 @@
 		<mkdir dir="${bin}" />
 	</target>
 
-	<!-- deps.js file generation for development -->
+	<!-- deps.js file generation for development and .js file collection -->
 	<target name="deps" description="Generates a dependency file for development.">
 		<exec executable="python" failonerror="true">
 			<arg line="${closure-library-depswriter}" />
-			<arg line="--root_with_prefix=&quot;. ..&quot;" />
 			<arg line="--output_file=${dependency-file}" />
+			<arg line="--root_with_prefix='${src} ../../../../src'"/>
 		</exec>
-		<pathconvert property="srcfiles" pathsep=" ">
-			<map from="${basedir}" to="--js ." />
-			<fileset dir="${src}" includes="**/*.js" />
-		</pathconvert>
-		<echo message="${srcfiles}" />
-
-	</target>
-
-	<!-- compiler help -->
-	<target name="help">
-		<java jar="${compiler}" fork="true" failonerror="true">
-			<arg line="--help" />
-		</java>
 	</target>
 
 	<!-- Build everything. -->
-	<target name="all" depends="" />
+	<target name="all" depends="deps,prebuild" description="Builds ${software-short}.js.">
+		<!-- Find all source files. -->
+    <pathconvert property="srcfiles" pathsep=" ">
+      <map from="${basedir}" to="-i ." />
+      <fileset dir="${src}" includes="**/*.js" />
+    </pathconvert>
+		<!-- Execute the closure builder. -->
+		<exec executable="python" failonerror="true">
+			<arg line="${closure-library-builder}" />
+			<arg line="--root ." />
+			<arg line="-o compiled" />
+			<arg line="-c ${closure-compiler}" />
+			<arg line="--output_file=${bin}/${software-short}.js" />
+			<arg line="-f --warning_level=VERBOSE" />
+			<arg line="-f --compilation_level=ADVANCED_OPTIMIZATIONS" />
+			<arg line="-f --jscomp_warning=missingProperties" />
+			<arg line="-f --jscomp_warning=checkTypes" />
+			<arg line="-f --define=goog.DEBUG=false" />
+			<arg line="-f --summary_detail_level=3" />
+			<arg line="-f --output_wrapper='${license}%output%'" />
+			<arg line="${srcfiles}" />
+			<arg line="-f --js=${closure-library-deps}" />
+		</exec>
+	</target>
 
 	<!-- Delete old build files. -->
 	<target name="clean">
-		<delete file="${depend}" />
 		<delete dir="${bin}" />
 	</target>
 

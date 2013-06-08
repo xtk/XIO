@@ -27,12 +27,14 @@
  *
  */
 
+goog.provide('X');
 goog.provide('X.io');
 
 /**
  * The XTK namespace.
  *
  * @const
+ * @namespace
  */
 var X = X || {};
 
@@ -40,6 +42,7 @@ var X = X || {};
  * The IO namespace.
  * 
  * @const
+ * @namespace
  */
 X.io = X.io || {'version':'0.0.1'};
 

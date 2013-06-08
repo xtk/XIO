@@ -29,7 +29,7 @@ X.io.base = function() {
    * @type {!string}
    * @protected
    */
-  this._classname = 'base';
+  this._classname = 'io.base';
   
   /**
    * The unique id of this instance.
