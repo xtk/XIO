@@ -9,7 +9,7 @@
 
     },
     "classname" : function() {
-      assert(this.parser.classname, 'io.parserNII');
+      assert(this.parser.classname, 'io.parserNIIx');
     }
   });
 
