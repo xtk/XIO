@@ -28,7 +28,7 @@
  */
 
 goog.provide('X');
-goog.provide('X.io');
+
 
 /**
  * The XTK namespace.
@@ -38,13 +38,7 @@ goog.provide('X.io');
  */
 var X = X || {};
 
-/**
- * The IO namespace.
- * 
- * @const
- * @namespace
- */
-X.io = X.io || {'version':'0.0.1'};
+
 
 /**
  * Can be used to check if the XTK library was compiled.
@@ -115,7 +109,7 @@ var $ = window.$;
 //XTK's event mechanism. This hack fixes this.
 //
 function bind_shim() {
-  
+
   if ( !Function.prototype.bind ) {
 
     Function.prototype.bind = function(oThis) {
