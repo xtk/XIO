@@ -13,9 +13,10 @@ goog.provide('X.io.parserNII');
 // requires
 goog.require('X.io.parser');
 
+
 /**
  * Create a parser for .nii/.nii.gz files.
- * 
+ *
  * @constructor
  * @extends X.io.parser
  */

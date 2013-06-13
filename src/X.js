@@ -39,7 +39,6 @@ goog.provide('X');
 var X = X || {};
 
 
-
 /**
  * Can be used to check if the XTK library was compiled.
  *
