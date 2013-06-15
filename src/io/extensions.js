@@ -1,4 +1,4 @@
-goog.provide('X.io_.extensions');
+goog.provide('X.io.extensions');
 
 goog.require('X.io');
 

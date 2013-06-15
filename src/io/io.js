@@ -1,10 +1,14 @@
 goog.provide('X.io');
 
 goog.require('X');
-goog.require('X.io_');
 
-
-
+/**
+ * The IO namespace and singleton access to all X.io-functions and -parsers.
+ *
+ * @const
+ * @namespace
+ */
+X.io = {'version':'0.0.1'};
 
 X.io.onloading = function(id, progress) {
 
@@ -31,6 +35,7 @@ X.io.oncomplete = function() {
   // do nothing, should be overloaded
 };
 
+window.console.log('XIO version '+X.io['version']);
 
 goog.exportSymbol('X.io', X.io);
 goog.exportSymbol('X.io.onloading', X.io.onloading);

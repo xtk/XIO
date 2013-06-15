@@ -1,3 +1,3 @@
 (function() {
-  goog.require('X.io');
+  goog.require('X.io.factory_');
 })();

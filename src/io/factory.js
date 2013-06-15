@@ -1,5 +1,7 @@
-goog.provide('X.io_');
+goog.provide('X.io.factory_');
 
+goog.require('X.io');
+goog.require('X.io.extensions');
 goog.require('X.io.parserNII');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrManager');
@@ -9,7 +11,7 @@ goog.require('goog.structs.Map');
  * @constructor
  * @private
  */
-X.io_ = function() {
+X.io.factory_ = function() {
 
   /**
    *
@@ -18,7 +20,7 @@ X.io_ = function() {
 
   // listen to success events
   goog.events.listen(this._xhr_manager, goog.net.EventType.SUCCESS,
-      X.io_.prototype.onload_.bind(this));
+      X.io.factory_.prototype.onload_.bind(this));
 
   /**
    *
@@ -30,11 +32,11 @@ X.io_ = function() {
    */
   this._progress = 0;
 
-  window.console.log('XIO version 0.0.1.');
+  //window.console.log('XIO version 0.0.1.');
 
 };
 
-X.io_.status = {
+X.io.factory_.status = {
   INFLIGHT: 1,
   LOADED: 5,
   PARSED: 10
@@ -46,8 +48,8 @@ X.io_.status = {
  * @param extension
  * @returns
  */
-X.io_.prototype.load = function(uris, extension) {
-
+X.io.factory_.prototype.load = function(uris, extension) {
+  
   var id = uris;
 
   if (goog.isArray(uris)) {
@@ -69,14 +71,14 @@ X.io_.prototype.load = function(uris, extension) {
   // check if this is a supported file type
   if (!(_extension in X.io.extensions)) {
 
-    throw new Error('The ' + extension + ' file format is not supported.');
+    throw new Error('The ' + _extension + ' file format is not supported.');
 
   }
 
   // TODO local files and multiple files
 
   // add the loadable
-  var item = new X.io_.item(uris, X.io_.status.INFLIGHT);
+  var item = new X.io.factory_.item(uris, X.io.factory_.status.INFLIGHT);
   this._jobs.set(id, item);
 
   // start the xhr request
@@ -84,14 +86,14 @@ X.io_.prototype.load = function(uris, extension) {
 
   // .. and listen to progress events
   goog.events.listen(c.xhrIo.xhr_, goog.net.EventType.PROGRESS,
-      X.io_.prototype.onloading_.bind(this, id));
+      X.io.factory_.prototype.onloading_.bind(this, id));
 
   return id;
 
 };
 
 
-X.io_.prototype.onloading_ = function(id, e) {
+X.io.factory_.prototype.onloading_ = function(id, e) {
 
   // update progress of individual job
   var _item = this._jobs.get(id);
@@ -134,16 +136,16 @@ X.io_.prototype.onloading_ = function(id, e) {
 /**
  * @param e
  */
-X.io_.prototype.onload_ = function(e) {
+X.io.factory_.prototype.onload_ = function(e) {
 
   // mark this job as loaded
   var id = e.id;
-  this._jobs.get(id)._status = X.io_.status.LOADED;
+  this._jobs.get(id)._status = X.io.factory_.status.LOADED;
 
   // call individual callback
   eval("X.io.onload('" + id + "')");
   // and start parsing
-  setTimeout(X.io_.parse_.bind(this, id), 10);
+  setTimeout(X.io.factory_.parse_.bind(this, id), 10);
 
 
   // check if all jobs were completed
@@ -152,7 +154,7 @@ X.io_.prototype.onload_ = function(e) {
   var _jobs = this._jobs.getKeyIterator();
   goog.iter.forEach(_jobs, function(id) {
 
-    if (this._jobs.get(id)._status != X.io_.status.LOADED) {
+    if (this._jobs.get(id)._status != X.io.factory_.status.LOADED) {
 
       _all_completed = false;
 
@@ -171,25 +173,19 @@ X.io_.prototype.onload_ = function(e) {
 };
 
 
-X.io_.parse_ = function(id) {
+X.io.factory_.parse_ = function(id) {
 
-  console.log('parsing', id);
+  window.console.log('parsing', id);
 
 };
 
-/**
- * The IO namespace and singleton access to all X.io-functions and -parsers.
- *
- * @const
- * @namespace
- */
-X.io = new X.io_();
+
 
 
 /**
  * @constructor
  */
-X.io_.item = function(uris, status) {
+X.io.factory_.item = function(uris, status) {
 
   this._uris = uris;
   this._status = status;
@@ -199,4 +195,7 @@ X.io_.item = function(uris, status) {
 
 };
 
-goog.exportSymbol('X.io.prototype.load', X.io_.prototype.load);
+
+X.io.factory = new X.io.factory_();
+
+goog.exportSymbol('X.io.load', X.io.factory.load.bind(X.io.factory));

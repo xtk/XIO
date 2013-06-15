@@ -1,6 +1,55 @@
 <html>
 <head>
 <script type="text/javascript" src="../bin/xio.js"></script>
+<script type="text/javascript">
+
+function load_data() {
+  
+  //X.io.load(['http://x.babymri.org/?avf.nii','http://x.babymri.org/?streamlineres.trk']);
+  
+  X.io.load('http://x.babymri.org/?avf.nii');
+  X.io.load('http://x.babymri.org/?vol.nii');
+  X.io.load('http://x.babymri.org/?streamlineres.trk');
+  
+  
+  
+  X.io.onloading = function(id, percentage) {
+    
+    if (!id) {
+      console.log(percentage);
+    }
+    
+  };
+  
+  X.io.onload = function(id) {
+    
+    if (id) {
+      console.log('Finished loading', id);
+    } else {
+      console.log('Everything loaded.');
+    }
+    
+  };
+  
+  X.io.onparsing = function(id, percentage) {
+    
+  };
+  
+  X.io.onparse = function(id) {
+    
+  };
+  
+  X.io.oncomplete = function() {
+    
+    console.log('all done');
+    
+  };
+  
+  
+};
+
+
+</script>
 </head>
 <body></body>
 </html>
