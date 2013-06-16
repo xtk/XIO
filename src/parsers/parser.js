@@ -95,7 +95,6 @@ goog.inherits(X.io.parser, X.io.base);
  * 
  * @param {!X.io.base} container A container which holds the loaded data. This can
  *            be an X.object as well.
- * @param {!X.object} object The object to configure.
  * @param {!ArrayBuffer} data The data to parse.
  * @param {*} flag An additional flag.
  * @throws {Error} An exception if something goes wrong.

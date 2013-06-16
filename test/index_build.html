@@ -4,45 +4,47 @@
 <script type="text/javascript">
 
 function load_data() {
-  
-  //X.io.load(['http://x.babymri.org/?avf.nii','http://x.babymri.org/?streamlineres.trk']);
-  
+
   X.io.load('http://x.babymri.org/?avf.nii');
   X.io.load('http://x.babymri.org/?vol.nii');
   X.io.load('http://x.babymri.org/?streamlineres.trk');
-  
-  
-  
+
+  var dicoms = [ '53320924', '53320940', '53320956', '53320972', '53320988',
+      '53321004', '53321020', '53321036' ]
+  X.io.load(dicoms.map(function(v) {
+    return 'http://x.babymri.org/?' + v;
+  }), 'DICOM');
+
   X.io.onloading = function(id, percentage) {
-    
-    if (!id) {
+
+    if ( !id ) {
       console.log(percentage);
     }
-    
+
   };
-  
+
   X.io.onload = function(id) {
-    
-    if (id) {
+
+    if ( id ) {
       console.log('Finished loading', id);
     } else {
       console.log('Everything loaded.');
     }
-    
+
   };
-  
+
   X.io.onparsing = function(id, percentage) {
-    
+
   };
-  
+
   X.io.onparse = function(id) {
-    
+
   };
-  
+
   X.io.oncomplete = function() {
-    
+
     console.log('all done');
-    
+
   };
   
   
