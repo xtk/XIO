@@ -16,7 +16,7 @@ goog.require('X.io.parser');
 
 /**
  * Create a parser for .nii/.nii.gz files.
- *
+ * 
  * @constructor
  * @extends X.io.parser
  */
@@ -42,13 +42,39 @@ goog.inherits(X.io.parserNII, X.io.parser);
 /**
  * @inheritDoc
  */
-X.io.parserNII.prototype.parse = function(container, object, data, flag) {
+X.io.parserNII.prototype.parse = function(job) {
 
   X.TIMER(this._classname + '.parse');
 
-  window.console.log('yo parser');
+  // dispatch parsing progress event
+  this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));
+
+  // dispatch parsing progress event
+  this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));
+
+  // dispatch parsing progress event
+  this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));
+
+  // dispatch parsing progress event
+  this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));
+
+  // dispatch parsing progress event
+  this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));
+
+  // update the data of this job
+  job._data = {
+    'header' : {
+      'dimensions': [256,256,176]
+    },
+    'data' : {
+      'image' : new Float32Array(100000000)
+    }
+  };
 
   X.TIMERSTOP(this._classname + '.parse');
+
+  // dispatch parsing progress event
+  this.dispatchEvent(new X.io.event.ParseEvent(job));
 
 };
 

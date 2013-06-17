@@ -1,0 +1,68 @@
+<html>
+<head>
+<script type="text/javascript"
+	src="../lib/google-closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../xio-deps.js"></script>
+<script type="text/javascript" src="../test/requires.js"></script>
+<script type="text/javascript">
+  function load_data() {
+
+    //X.io.load(['http://x.babymri.org/?avf.nii','http://x.babymri.org/?streamlineres.trk']);
+
+    X.io.load('http://x.babymri.org/?avf.nii');
+    X.io.load('http://x.babymri.org/?vol.nii');
+    X.io.load('http://x.babymri.org/?streamlineres.trk');
+
+    var dicoms = [ '53320924', '53320940', '53320956', '53320972', '53320988',
+        '53321004', '53321020', '53321036' ]
+    X.io.load(dicoms.map(function(v) {
+      return 'http://x.babymri.org/?' + v;
+    }), 'DICOM');
+
+    X.io.onloading = function(id, percentage) {
+
+      if ( !id ) {
+        console.log('Loading', percentage);
+      }
+
+    };
+
+    X.io.onload = function(id) {
+
+      if ( id ) {
+        console.log('Finished loading', id);
+      } else {
+        console.log('Everything loaded.');
+      }
+
+    };
+
+    X.io.onparsing = function(id, percentage) {
+
+      if ( !id ) {
+        console.log('Parsing', percentage);
+      }
+
+    };
+
+    X.io.onparse = function(id) {
+
+      if (id) {
+        console.log('Finished parsing', id);
+      } else {
+        console.log('Everything parsed');
+      }
+      
+    };
+
+    X.io.oncomplete = function() {
+
+      console.log('all done');
+
+    };
+
+  };
+</script>
+</head>
+<body></body>
+</html>

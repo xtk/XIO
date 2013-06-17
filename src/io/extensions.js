@@ -1,6 +1,7 @@
 goog.provide('X.io.extensions');
 
 goog.require('X.io');
+goog.require('X.io.parserNII');
 goog.require('goog.net.XhrIo.ResponseType');
 
 /**
@@ -10,16 +11,20 @@ goog.require('goog.net.XhrIo.ResponseType');
  */
 X.io.extensions = {
   'DICOM' : {
-    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER
+    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER,
+    parser : X.io.parserNII
   },
   'NII' : {
-    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER
+    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER,
+    parser : X.io.parserNII
   },
   'GZ' : {
-    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER
+    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER,
+    parser : X.io.parserNII
   },
   'TRK' : {
-    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER
+    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER,
+    parser : X.io.parserNII
   }
 };
 

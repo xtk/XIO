@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+<head>
+<title>jsProgressBarHandler Demo | Javascript
+	Progress/Percentage Bar</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+
+
+
+<!-- jsProgressBarHandler prerequisites : prototype.js -->
+<script type="text/javascript" src="js/prototype/prototype.js"></script>
+
+<!-- jsProgressBarHandler core -->
+<script type="text/javascript" src="js/bramus/jsProgressBarHandler.js"></script>
+
+<script type="text/javascript" src="../../bin/xio.js"></script>
+
+<style type="text/css">
+body {
+	font-family: 'Verdana';
+	color: #40454b;
+	font-size: 12px;
+}
+</style>
+
+<script type="text/javascript">
+  function load_data() {
+
+    X.io.load('http://x.babymri.org/?avf.nii');
+    X.io.load('http://x.babymri.org/?vol.nii');
+    X.io.load('http://x.babymri.org/?streamlineres.trk');
+
+    var dicoms = [ '53320924', '53320940', '53320956', '53320972', '53320988',
+        '53321004', '53321020', '53321036' ]
+    X.io.load(dicoms.map(function(v) {
+      return 'http://x.babymri.org/?' + v;
+    }), 'DICOM');
+
+    var _loading_progress = 0;
+    var _parsing_progress = 0;
+
+    update_progress_bar = function() {
+      manualPB2.setPercentage(Math.floor(_loading_progress + _parsing_progress));
+    };
+
+    X.io.onloading = function(id, percentage) {
+
+      if ( !id ) {
+        _loading_progress = percentage / 2;
+        update_progress_bar();
+      }
+
+    };
+
+    X.io.onload = function(id) {
+
+      if ( id ) {
+        console.log('Finished loading', id);
+      } else {
+        console.log('Everything loaded.');
+      }
+
+    };
+
+    X.io.onparsing = function(id, percentage) {
+
+      if ( !id ) {
+        _parsing_progress = percentage / 2;
+        update_progress_bar();
+      }
+
+    };
+
+    X.io.onparse = function(id) {
+
+      if ( id ) {
+        console.log('Finished parsing', id);
+      } else {
+        console.log('Everything parsed.');
+      }
+
+    };
+
+    X.io.oncomplete = function() {
+
+      console.log('all done');
+
+    };
+
+  };
+</script>
+
+
+</head>
+
+<body>
+	<div>
+		<span style="color: #006600; font-weight: bold;">Multi Color
+			Bar</span> <br /> <span id="element6">[ Loading Progress Bar ]</span>
+
+	</div>
+	<script type="text/javascript">
+    document.observe('dom:loaded', function() {
+
+      // second manual example : multicolor (and take all other default paramters)
+      manualPB2 = new JS_BRAMUS.jsProgressBar($('element6'), 0, {
+
+        barImage : Array('images/bramus/percentImage_back4.png',
+            'images/bramus/percentImage_back3.png',
+            'images/bramus/percentImage_back2.png',
+            'images/bramus/percentImage_back1.png')
+      });
+    }, false);
+  </script>
+
+
+</body>
+</html>

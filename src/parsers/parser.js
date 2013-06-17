@@ -12,6 +12,7 @@ goog.provide('X.io.parser');
 
 // requires
 goog.require('X.io.base');
+goog.require('X.io.events');
 
 /**
  * Create a parser for binary or ascii data.
@@ -90,17 +91,14 @@ goog.inherits(X.io.parser, X.io.base);
 
 
 /**
- * Parse data and configure the given object. When complete, a
+ * Parse data. When complete, a
  * X.io.parser.ModifiedEvent is fired.
  * 
- * @param {!X.io.base} container A container which holds the loaded data. This can
- *            be an X.object as well.
- * @param {!ArrayBuffer} data The data to parse.
- * @param {*} flag An additional flag.
+ * @param {!X.io.job} job
  * @throws {Error} An exception if something goes wrong.
  * @export
  */
-X.io.parser.prototype.parse = function(container, object, data, flag) {
+X.io.parser.prototype.parse = function(job) {
 
   throw new Error('The function parse() should be overloaded.');
 };

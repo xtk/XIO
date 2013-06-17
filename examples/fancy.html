@@ -1,0 +1,155 @@
+<!-- 
+
+Progressbar from http://css-tricks.com/css3-progress-bars/
+
+ -->
+
+<html>
+<head>
+
+<script type="text/javascript" src="../bin/xio.js"></script>
+<script type="text/javascript">
+
+function load_data() {
+
+  X.io.load('http://x.babymri.org/?avf.nii');
+  X.io.load('http://x.babymri.org/?vol.nii');
+  X.io.load('http://x.babymri.org/?streamlineres.trk');
+
+  var dicoms = [ '53320924', '53320940', '53320956', '53320972', '53320988',
+      '53321004', '53321020', '53321036' ]
+  X.io.load(dicoms.map(function(v) {
+    return 'http://x.babymri.org/?' + v;
+  }), 'DICOM');
+
+  X.io.onloading = function(id, percentage) {
+
+    if ( !id ) {
+      document.getElementById('loading_progress').style.width = percentage+'%';
+    }
+
+  };
+
+  X.io.onload = function(id) {
+
+    if ( id ) {
+      console.log('Finished loading', id);
+    } else {
+      console.log('Everything loaded.');
+    }
+
+  };
+
+  X.io.onparsing = function(id, percentage) {
+
+    if ( !id ) {
+      document.getElementById('parsing_progress').style.width = percentage+'%';
+    }    
+    
+  };
+
+  X.io.onparse = function(id) {
+
+    if ( id ) {
+      console.log('Finished parsing', id);
+    } else {
+      console.log('Everything parsed.');
+    }    
+    
+  };
+
+  X.io.oncomplete = function() {
+
+    console.log('all done');
+
+  };
+  
+  
+};
+
+
+</script>
+
+<style type="text/css">
+
+.meter { 
+  height: 5px;  /* Can be anything */
+  width: 200px;
+  position: relative;
+  background: #555;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 2px;
+  -webkit-box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+  -moz-box-shadow   : inset 0 -1px 1px rgba(255,255,255,0.3);
+  box-shadow        : inset 0 -1px 1px rgba(255,255,255,0.3);
+}
+
+.meter > span {
+  display: block;
+  height: 100%;
+     -webkit-border-top-right-radius: 8px;
+  -webkit-border-bottom-right-radius: 8px;
+         -moz-border-radius-topright: 8px;
+      -moz-border-radius-bottomright: 8px;
+             border-top-right-radius: 8px;
+          border-bottom-right-radius: 8px;
+      -webkit-border-top-left-radius: 20px;
+   -webkit-border-bottom-left-radius: 20px;
+          -moz-border-radius-topleft: 20px;
+       -moz-border-radius-bottomleft: 20px;
+              border-top-left-radius: 20px;
+           border-bottom-left-radius: 20px;
+  background-color: rgb(43,194,83);
+  background-image: -webkit-gradient(
+    linear,
+    left bottom,
+    left top,
+    color-stop(0, rgb(43,194,83)),
+    color-stop(1, rgb(84,240,84))
+   );
+  background-image: -webkit-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+   );
+  background-image: -moz-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+   );
+  background-image: -ms-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+   );
+  background-image: -o-linear-gradient(
+    center bottom,
+    rgb(43,194,83) 37%,
+    rgb(84,240,84) 69%
+   );
+  -webkit-box-shadow: 
+    inset 0 2px 9px  rgba(255,255,255,0.3),
+    inset 0 -2px 6px rgba(0,0,0,0.4);
+  -moz-box-shadow: 
+    inset 0 2px 9px  rgba(255,255,255,0.3),
+    inset 0 -2px 6px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="meter">
+  <span id='loading_progress' style="width: 0%"></span>
+</div>
+<div class="meter">
+  <span id='parsing_progress' style="width: 0%"></span>
+</div>
+</body>
+</html>

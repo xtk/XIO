@@ -2,6 +2,7 @@ goog.provide('X.io.factory_');
 
 goog.require('X.io');
 goog.require('X.io.extensions');
+goog.require('X.io.events');
 goog.require('X.io.file');
 goog.require('X.io.job');
 goog.require('X.io.parserNII');
@@ -38,7 +39,9 @@ X.io.factory_ = function() {
   /**
    *
    */
-  this._progress = 0;
+  this._loaded = 0;
+  
+  this._parsed = 0;
 
   // window.console.log('XIO version 0.0.1.');
 
@@ -49,7 +52,7 @@ X.io.factory_.status = {
   LOADING : 1,
   LOAD : 2,
   PARSING : 3,
-  PARSED : 4,
+  PARSE : 4,
   COMPLETE : 10
 };
 
@@ -91,11 +94,13 @@ X.io.factory_.prototype.load = function(uri, extension) {
   }
 
   // create a new X.io.job
-  var _job = new X.io.job(id, _extension, X.io.factory_.status.QUEUED);
+  var _job = new X.io.job(id, _extension, X.io.extensions[_extension].parser,
+      X.io.factory_.status.QUEUED);
 
   // TODO local files
 
-  for ( var u in uri) {
+  var l = uri.length;
+  for ( var u = 0; u < l; u++) {
 
     // grab the current uri
     u = uri[u];
@@ -165,7 +170,8 @@ X.io.factory_.prototype.onloading_ = function(uri, e) {
   _job._loaded = 0;
 
   // .. and grab the progress of all associated files
-  for ( var f in _job._files) {
+  var l = _job._files.length;
+  for ( var f = 0; f < l; f++) {
 
     f = _job._files[f];
     _job._total += f._total;
@@ -193,13 +199,13 @@ X.io.factory_.prototype.onloading_ = function(uri, e) {
   // calculate global percentage
   _progress = Math.floor(_loaded / _total * 100);
 
-  if ( _progress > this._progress ) {
+  if ( _progress > this._loaded ) {
 
     // only call the onloading callback if the
     // percentage increased
     // with id=null since it is the global progress
-    this._progress = _progress;
-    eval("X.io.onloading(" + null + "," + this._progress + ")");
+    this._loaded = _progress;
+    eval("X.io.onloading(" + null + "," + this._loaded + ")");
 
   }
 
@@ -221,7 +227,8 @@ X.io.factory_.prototype.onload_ = function(e) {
   var _job = _file._job;
 
   // .. and check the status of all associated files
-  for ( var f in _job._files) {
+  var l = _job._files.length;
+  for ( var f = 0; f < l; f++) {
 
     f = _job._files[f];
     if ( f._status != X.io.factory_.status.LOAD ) {
@@ -239,14 +246,14 @@ X.io.factory_.prototype.onload_ = function(e) {
   // fire the job callback
   eval("X.io.onload('" + _job._id + "')");
   // and start parsing
-  setTimeout(X.io.factory_.parse_.bind(this, _job._id), 10);
+  setTimeout(X.io.factory_.prototype.parse_.bind(this, _job._id), 10);
 
   // now check if all jobs are fully loaded
   var _fully_loaded = true;
   var _jobs = this._jobs.getValueIterator();
   goog.iter.forEach(_jobs, function(job) {
 
-    if ( job._status != X.io.factory_.status.LOAD ) {
+    if ( job._status == X.io.factory_.status.LOADING ) {
 
       // at least one job is still loading, so exit here
       _fully_loaded = false;
@@ -258,7 +265,7 @@ X.io.factory_.prototype.onload_ = function(e) {
   if ( _fully_loaded ) {
 
     // everything was loaded, so reset all variables/maps
-    this._progress = 0;
+    this._loaded = 0;
 
     // and fire the onload callback
     eval("X.io.onload(" + null + ")");
@@ -267,10 +274,98 @@ X.io.factory_.prototype.onload_ = function(e) {
 
 };
 
-X.io.factory_.parse_ = function(id) {
+X.io.factory_.prototype.parse_ = function(id) {
 
-  window.console.log('parsing', id);
+  var _job = this._jobs.get(id);
 
+  // update status of this job
+  _job._status = X.io.factory_.status.PARSING;
+
+  // create the parser
+  var _parser = new _job._parser;
+  // .. listen to parser events
+  goog.events.listen(_parser, X.io.events.PARSING,
+      X.io.factory_.prototype.onparsing_.bind(this));
+  goog.events.listenOnce(_parser, X.io.events.PARSE,
+      X.io.factory_.prototype.onparse_.bind(this));
+  // .. and start parsing
+  setTimeout(_parser.parse.bind(_parser, _job), 10);
+
+};
+
+X.io.factory_.prototype.onparsing_ = function(e) {
+
+  var _job = e._job;
+
+  // update progress
+  _job._parsed += e._progress;
+
+  // fire the job callback
+  eval("X.io.onparsing('" + _job._id + "'," + _job._parsed + ")");
+
+  // update the global progress by merging the progress of all
+  // jobs
+  var _parsed = 0;
+
+  var _jobs = this._jobs.getValueIterator();
+  goog.iter.forEach(_jobs, function(job) {
+
+    _parsed += job._parsed;
+
+  }.bind(this));
+  
+  // calculate global parsing percentage
+  _parsed = Math.floor(_parsed / this._jobs.getCount());
+  
+  if ( _parsed > this._parsed ) {
+
+    // only call the onparsing callback if the
+    // percentage increased
+    // with id=null since it is the global progress
+    this._parsed = _parsed;
+    eval("X.io.onparsing(" + null + "," + this._parsed + ")");
+
+  }
+
+};
+
+X.io.factory_.prototype.onparse_ = function(e) {
+
+  var _job = e._job;
+  // update status of this job
+  _job._status = X.io.factory_.status.PARSE;
+
+  // fire the job callback
+  eval("X.io.onparse('" + _job._id + "')");
+
+
+  // now check if all jobs are fully parsed
+  var _fully_parsed = true;
+  var _jobs = this._jobs.getValueIterator();
+  goog.iter.forEach(_jobs, function(job) {
+
+    if ( job._status != X.io.factory_.status.PARSE ) {
+
+      // at least one job is still parsing, so exit here
+      _fully_parsed = false;
+
+    }
+
+  }.bind(this));
+
+  if ( _fully_parsed ) {
+
+    // everything was loaded, so reset all variables/maps
+    this._parsed = 0;
+
+    // and fire the onload callback
+    eval("X.io.onparse(" + null + ")");
+
+    // as well as the oncomplete callback
+    eval("X.io.oncomplete()");
+    
+  }
+  
 };
 
 // attach the factory to the X.io namespace
