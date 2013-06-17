@@ -1,0 +1,2 @@
+importScripts('../bin/xio.js');
+

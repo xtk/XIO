@@ -40,7 +40,7 @@ X.io.factory_ = function() {
    *
    */
   this._loaded = 0;
-  
+
   this._parsed = 0;
 
   // window.console.log('XIO version 0.0.1.');
@@ -52,8 +52,7 @@ X.io.factory_.status = {
   LOADING : 1,
   LOAD : 2,
   PARSING : 3,
-  PARSE : 4,
-  COMPLETE : 10
+  PARSE : 4
 };
 
 /**
@@ -313,10 +312,10 @@ X.io.factory_.prototype.onparsing_ = function(e) {
     _parsed += job._parsed;
 
   }.bind(this));
-  
+
   // calculate global parsing percentage
   _parsed = Math.floor(_parsed / this._jobs.getCount());
-  
+
   if ( _parsed > this._parsed ) {
 
     // only call the onparsing callback if the
@@ -363,12 +362,30 @@ X.io.factory_.prototype.onparse_ = function(e) {
 
     // as well as the oncomplete callback
     eval("X.io.oncomplete()");
-    
+
   }
-  
+
+};
+
+X.io.factory_.prototype.get = function(id) {
+
+  // grab the job
+  var _job = this._jobs.get(id);
+
+  // check if this job is fully parsed yet
+  if (_job._status != X.io.factory_.status.PARSE) {
+
+    throw new Error('Job ' + id + ' is not fully parsed yet.');
+
+  }
+
+  return _job._data;
+
 };
 
 // attach the factory to the X.io namespace
 X.io.factory = new X.io.factory_();
 // and alias the X.io.factory_.prototype.load function as X.io.load
 goog.exportSymbol('X.io.load', X.io.factory.load.bind(X.io.factory));
+// as well as the X.io.factory_.prototype.get function as X.io.get
+goog.exportSymbol('X.io.get', X.io.factory.get.bind(X.io.factory));

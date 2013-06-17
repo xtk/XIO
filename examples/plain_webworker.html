@@ -1,0 +1,25 @@
+<html>
+<head>
+
+<script type="text/javascript">
+  function load_data() {
+
+    var worker = new Worker('webworker.js');
+    
+    worker.onmessage = function(e) {
+
+      console.log(e);
+    };
+    
+    // start the worker
+    worker.postMessage();
+    
+
+  };
+</script>
+
+</head>
+
+<body>
+</body>
+</html>

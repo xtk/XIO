@@ -2,65 +2,109 @@
 <head>
 <script type="text/javascript" src="../bin/xio.js"></script>
 <script type="text/javascript">
+  function load_data() {
 
-function load_data() {
+    var dicoms = ['53320924', '53320940', '53320956', '53320972', '53320988',
+                  '53321004', '53321020', '53321036'].map(function(v) {
+      return 'http://x.babymri.org/?' + v;
+    });    
 
-  X.io.load('http://x.babymri.org/?avf.nii');
-  X.io.load('http://x.babymri.org/?vol.nii');
-  X.io.load('http://x.babymri.org/?streamlineres.trk');
-
-  var dicoms = [ '53320924', '53320940', '53320956', '53320972', '53320988',
-      '53321004', '53321020', '53321036' ]
-  X.io.load(dicoms.map(function(v) {
-    return 'http://x.babymri.org/?' + v;
-  }), 'DICOM');
-
-  X.io.onloading = function(id, percentage) {
-
-    if ( !id ) {
-      console.log('Loading', percentage);
-    }
-
-  };
-
-  X.io.onload = function(id) {
-
-    if ( id ) {
-      console.log('Finished loading', id);
-    } else {
-      console.log('Everything loaded.');
-    }
-
-  };
-
-  X.io.onparsing = function(id, percentage) {
-
-    if ( !id ) {
-      console.log('Parsing', percentage);
-    }
-
-  };
-
-  X.io.onparse = function(id) {
-
-    if (id) {
-      console.log('Finished parsing', id);
-    } else {
-      console.log('Everything parsed');
-    }
+    //
+    // SETUP FILE LOADING
+    //
+    // - loading starts immediately when X.io.load gets called
+    // - each X.io.load configures a job with single or multiple files 
+    // - the given URI is also the id of this job
+    X.io.load('http://x.babymri.org/?avf.nii');
+    X.io.load('http://x.babymri.org/?vol.nii');
+    X.io.load('http://x.babymri.org/?streamlineres.trk');
+    // - it is also possible to force a file format by passing an extension
+    X.io.load(dicoms, 'DICOM');
     
+    
+    //
+    // ONLOADING CALLBACK
+    //
+    // gets executed when there is loading progress
+    //  a) with a passed id to track individual job loading progress
+    //  b) with id==null for the overall loading progress
+    //
+    X.io.onloading = function(id, percentage) {
+
+      if (!id) {
+        console.log('Loading', percentage);
+      }
+      
+    };
+
+    //
+    // ONLOAD CALLBACK
+    //
+    // gets executed when loading was completed
+    //  a) with a passed id for individual completion
+    //  b) with id==null for overall completion
+    //    
+    X.io.onload = function(id) {
+
+      if (id) {
+        console.log('Finished loading', id);
+      } else {
+        console.log('Everything loaded.');
+      }
+      
+    };
+    
+    //
+    // ONPARSING CALLBACK
+    //
+    // gets executed when there is parsing progress
+    //  a) with a passed id to track individual job parsing progress
+    //  b) with id==null for the overall parsing progress
+    //    
+    X.io.onparsing = function(id, percentage) {
+
+      if (!id) {
+        console.log('Parsing', percentage);
+      }
+      
+    };
+    
+    //
+    // ONPARSE CALLBACK
+    //
+    // gets executed when parsing was completed
+    //  a) with a passed id for individual completion
+    //  b) with id==null for overall completion
+    //        
+    X.io.onparse = function(id) {
+
+      if (id) {
+        console.log('Finished parsing', id);
+        
+        console.log('Data for ', id, ':', X.io.get(id));
+        
+      } else {
+        console.log('Everything parsed');
+      }
+      
+    };
+    
+    //
+    // ONCOMPLETE CALLBACK
+    //
+    // gets executed when everything was finished
+    //    
+    X.io.oncomplete = function() {
+
+      console.log('all done');
+      
+      // again access data
+      console.log('Data for the vol.nii', X.io.get('http://x.babymri.org/?vol.nii'));
+      
+    };
+    
+
   };
-
-  X.io.oncomplete = function() {
-
-    console.log('all done');
-
-  };
-  
-  
-};
-
-
 </script>
 </head>
 <body></body>

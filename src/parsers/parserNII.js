@@ -16,7 +16,7 @@ goog.require('X.io.parser');
 
 /**
  * Create a parser for .nii/.nii.gz files.
- * 
+ *
  * @constructor
  * @extends X.io.parser
  */
@@ -67,13 +67,13 @@ X.io.parserNII.prototype.parse = function(job) {
       'dimensions': [256,256,176]
     },
     'data' : {
-      'image' : new Float32Array(100000000)
+      'image' : new Float32Array(100000)
     }
   };
 
   X.TIMERSTOP(this._classname + '.parse');
 
-  // dispatch parsing progress event
+  // dispatch parse event
   this.dispatchEvent(new X.io.event.ParseEvent(job));
 
 };

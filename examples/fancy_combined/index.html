@@ -75,12 +75,15 @@ body {
 
     X.io.onparse = function(id) {
 
-      if ( id ) {
+      if (id) {
         console.log('Finished parsing', id);
+        
+        console.log('Data for ',id,':',X.io.get(id));
+        
       } else {
-        console.log('Everything parsed.');
+        console.log('Everything parsed');
       }
-
+      
     };
 
     X.io.oncomplete = function() {
