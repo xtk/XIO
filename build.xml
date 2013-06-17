@@ -14,10 +14,10 @@
 	<property name="bin" value="${basedir}/bin" />
 
 	<property name="closure-compiler" value="${lib}/google-closure-compiler/compiler.jar" />
-	<property name="closure-library" value="${lib}/google-closure-library/closure" />
-	<property name="closure-library-deps" value="${closure-library}/goog/deps.js" />
-	<property name="closure-library-depswriter" value="${closure-library}/bin/build/depswriter.py" />
-	<property name="closure-library-builder" value="${closure-library}/bin/build/closurebuilder.py" />
+	<property name="closure-library" value="${lib}/google-closure-library" />
+	<property name="closure-library-deps" value="${closure-library}/closure/goog/deps.js" />
+	<property name="closure-library-depswriter" value="${closure-library}/closure/bin/build/depswriter.py" />
+	<property name="closure-library-builder" value="${closure-library}/closure/bin/build/closurebuilder.py" />
 
 	<property name="dependency-file" value="${software-short}-deps.js" />
 
@@ -35,6 +35,7 @@
 			<arg line="${closure-library-depswriter}" />
 			<arg line="--output_file=${dependency-file}" />
 			<arg line="--root_with_prefix='${src} ../../../../src'"/>
+			<arg line="--root_with_prefix='${lib}/zlib.js ../../../../lib/zlib.js'"/>
 		</exec>
 	</target>
 
@@ -48,11 +49,16 @@
 		<!-- Execute the closure builder. -->
 		<exec executable="python" failonerror="true">
 			<arg line="${closure-library-builder}" />
-			<arg line="--root ." />
+			<arg line="--root ${src}" />
+			<!-- include the closure library -->
+			<arg line="--root ${closure-library}" />
+			<!-- include zlib.js -->
+			<arg line="--root ${lib}/zlib.js/src" />
 			<arg line="-o compiled" />
 			<arg line="-c ${closure-compiler}" />
 			<arg line="--output_file=${bin}/${software-short}.js" />
 			<arg line="-f --warning_level=VERBOSE" />
+			<arg line="-f --print_tree" />
 			<arg line="-f --compilation_level=ADVANCED_OPTIMIZATIONS" />
 			<arg line="-f --jscomp_warning=missingProperties" />
 			<arg line="-f --jscomp_warning=checkTypes" />

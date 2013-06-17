@@ -28,7 +28,7 @@
  */
 
 goog.provide('X');
-
+goog.provide('USE_TYPEDARRAY');
 
 /**
  * The XTK namespace.
@@ -37,6 +37,8 @@ goog.provide('X');
  * @namespace
  */
 var X = X || {};
+
+var USE_TYPEDARRAY = true;
 
 
 /**

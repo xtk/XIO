@@ -1,17 +1,8 @@
-/*
- * xxxxxxx xxxxxxx x:::::x x:::::x x:::::x x:::::x x:::::xx:::::x x::::::::::x
- * x::::::::x x::::::::x x::::::::::x x:::::xx:::::x x:::::x x:::::x x:::::x
- * x:::::x THE xxxxxxx xxxxxxx TOOLKIT http://www.goXTK.com Copyright (c) 2013
- * The X Toolkit Developers <dev@goXTK.com> The X Toolkit (XTK) is licensed
- * under the MIT License: http://www.opensource.org/licenses/mit-license.php
- * "Free software" is a matter of liberty, not price. "Free" as in "free
- * speech", not as in "free beer". - Richard M. Stallman
- */
-
 goog.provide('X.io.parserNII');
 
 // requires
 goog.require('X.io.parser');
+goog.require('Zlib.Gunzip');
 
 
 /**
