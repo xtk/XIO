@@ -58,7 +58,6 @@
 			<arg line="-c ${closure-compiler}" />
 			<arg line="--output_file=${bin}/${software-short}.js" />
 			<arg line="-f --warning_level=VERBOSE" />
-			<arg line="-f --print_tree" />
 			<arg line="-f --compilation_level=ADVANCED_OPTIMIZATIONS" />
 			<arg line="-f --jscomp_warning=missingProperties" />
 			<arg line="-f --jscomp_warning=checkTypes" />
