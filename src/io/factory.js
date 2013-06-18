@@ -245,7 +245,7 @@ X.io.factory_.prototype.onload_ = function(e) {
   // fire the job callback
   eval("X.io.onload('" + _job._id + "')");
   // and start parsing
-  setTimeout(X.io.factory_.prototype.parse_.bind(this, _job._id), 10);
+  setTimeout(X.io.factory_.prototype.parse_.bind(this, _job._id), 100);
 
   // now check if all jobs are fully loaded
   var _fully_loaded = true;
@@ -288,7 +288,7 @@ X.io.factory_.prototype.parse_ = function(id) {
   goog.events.listenOnce(_parser, X.io.events.PARSE,
       X.io.factory_.prototype.onparse_.bind(this));
   // .. and start parsing
-  setTimeout(_parser.parse.bind(_parser, _job), 10);
+  setTimeout(_parser.parse.bind(_parser, _job), 100);
 
 };
 
