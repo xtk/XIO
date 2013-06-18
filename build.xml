@@ -63,7 +63,7 @@
 			<arg line="-f --jscomp_warning=checkTypes" />
 			<arg line="-f --define=goog.DEBUG=false" />
 			<arg line="-f --summary_detail_level=3" />
-			<arg line="-f --output_wrapper='${license}%output%'" />
+			<arg line="-f --output_wrapper='${license}(function() {%output%}).call(this);'" />
 			<arg line="${srcfiles}" />
 			<arg line="-f --js=${closure-library-deps}" />
 		</exec>
