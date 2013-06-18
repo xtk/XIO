@@ -1,5 +1,5 @@
 self.window = self;
-importScripts('../bin/xio.js');
+importScripts('../../bin/xio.js');
 
 self.onmessage = function(e) {
 
@@ -10,13 +10,5 @@ self.onmessage = function(e) {
   X.io.oncomplete = function() {
     self.postMessage(X.io.get(_file));
   };
-
-//  X.io.onloading = function(id, progress) {
-//
-//    if (!id) {
-//      self.postMessage(progress);
-//    }
-//
-//  };
 
 };

@@ -4,30 +4,61 @@
 <script type="text/javascript">
   function load_data() {
 
+    console.time('everything');
+    
     var worker1 = new Worker('webworker.js');
     var worker2 = new Worker('webworker.js');
     var worker3 = new Worker('webworker.js');
+    var worker4 = new Worker('webworker.js');
+    
+    var worker_status = [false,false,false,false];
     
     worker1.onmessage = function(e) {
 
       console.log('worker1',e);
+      
+      worker_status[0] = true;
+      check_workers();
     };
     worker2.onmessage = function(e) {
 
       console.log('worker2',e);
+      
+      worker_status[1] = true;
+      check_workers();
     };
     worker3.onmessage = function(e) {
 
       console.log('worker3',e);
+      
+      worker_status[2] = true;
+      check_workers();
+    };    
+    worker4.onmessage = function(e) {
+
+      console.log('worker4',e);
+      
+      worker_status[3] = true;
+      check_workers();
     };    
     
+    function check_workers() {
+      
+      if (worker_status.every(function(v) { return v; })) {
+        
+        console.timeEnd('everything');
+        
+      }
+      
+    }
     
     // start the worker
     worker1.postMessage('http://x.babymri.org/?vol.nii');
     worker2.postMessage('http://x.babymri.org/?avf.nii');
-    worker3.postMessage('http://x.babymri.org/?streamlineres.trk');
+    worker3.postMessage('http://x.babymri.org/?T1sub.nii');
+    worker4.postMessage('http://x.babymri.org/?29/template.nii');
     
-
+    
   };
 </script>
 

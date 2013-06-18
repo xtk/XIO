@@ -4,11 +4,13 @@
 <script type="text/javascript">
   function load_data() {
 
-    var dicoms = ['53320924', '53320940', '53320956', '53320972', '53320988',
+/*     var dicoms = ['53320924', '53320940', '53320956', '53320972', '53320988',
                   '53321004', '53321020', '53321036'].map(function(v) {
       return 'http://x.babymri.org/?' + v;
     });    
-
+ */
+    console.time('everything');
+    
     //
     // SETUP FILE LOADING
     //
@@ -17,9 +19,10 @@
     // - the given URI is also the id of this job
     X.io.load('http://x.babymri.org/?avf.nii');
     X.io.load('http://x.babymri.org/?vol.nii');
-    X.io.load('http://x.babymri.org/?streamlineres.trk');
+    X.io.load('http://x.babymri.org/?T1sub.nii');
+    X.io.load('http://x.babymri.org/?29/template.nii');
     // - it is also possible to force a file format by passing an extension
-    X.io.load(dicoms, 'DICOM');
+    //X.io.load(dicoms, 'DICOM');
     
     
     //
@@ -98,8 +101,9 @@
 
       console.log('all done');
       
+      console.timeEnd('everything');
       // again access data
-      console.log('Data for the vol.nii', X.io.get('http://x.babymri.org/?vol.nii'));
+      //console.log('Data for the vol.nii', X.io.get('http://x.babymri.org/?vol.nii'));
       
     };
     

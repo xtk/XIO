@@ -11,7 +11,7 @@ Progressbar from http://css-tricks.com/css3-progress-bars/
 <script type="text/javascript">
 
 function load_data() {
-
+/* 
   X.io.load('http://x.babymri.org/?avf.nii');
   X.io.load('http://x.babymri.org/?vol.nii');
   X.io.load('http://x.babymri.org/?streamlineres.trk');
@@ -20,8 +20,13 @@ function load_data() {
       '53321004', '53321020', '53321036' ]
   X.io.load(dicoms.map(function(v) {
     return 'http://x.babymri.org/?' + v;
-  }), 'DICOM');
+  }), 'DICOM'); */
 
+  X.io.load('http://x.babymri.org/?avf.nii');
+  X.io.load('http://x.babymri.org/?vol.nii');
+  X.io.load('http://x.babymri.org/?T1sub.nii');
+  X.io.load('http://x.babymri.org/?29/template.nii'); 
+  
   X.io.onloading = function(id, percentage) {
 
     if ( !id ) {

@@ -28,7 +28,7 @@ body {
 <script type="text/javascript">
   function load_data() {
 
-    X.io.load('http://x.babymri.org/?avf.nii');
+/*     X.io.load('http://x.babymri.org/?avf.nii');
     X.io.load('http://x.babymri.org/?vol.nii');
     X.io.load('http://x.babymri.org/?streamlineres.trk');
 
@@ -37,7 +37,13 @@ body {
     X.io.load(dicoms.map(function(v) {
       return 'http://x.babymri.org/?' + v;
     }), 'DICOM');
-
+ */
+ 
+		X.io.load('http://x.babymri.org/?avf.nii');
+		X.io.load('http://x.babymri.org/?vol.nii');
+		X.io.load('http://x.babymri.org/?T1sub.nii');
+		X.io.load('http://x.babymri.org/?29/template.nii');
+ 
     var _loading_progress = 0;
     var _parsing_progress = 0;
 
