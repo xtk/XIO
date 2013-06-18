@@ -189,12 +189,17 @@ X.io.parser.prototype.jumpTo = function(position) {
  */
 X.io.parser.prototype.scan = function(type, chunks) {
 
-  if ( !goog.isDefAndNotNull(chunks) ) {
+  if (!goog.isDefAndNotNull(chunks)) {
+
     chunks = 1;
+
   }
+
   var _chunkSize = 1;
   var _array_type = Uint8Array;
+
   switch (type) {
+
   // 1 byte data types
   case 'uchar':
     break;
@@ -223,21 +228,39 @@ X.io.parser.prototype.scan = function(type, chunks) {
     _array_type = Float32Array;
     _chunkSize = 4;
     break;
+  case 'complex':
+    _array_type = Float64Array;
+    _chunkSize = 8;
+    break;
+  case 'double':
+    _array_type = Float64Array;
+    _chunkSize = 8;
+    break;
+
   }
+
   // increase the data pointer in-place
   var _bytes = new _array_type(this._data.slice(this._dataPointer,
       this._dataPointer += chunks * _chunkSize));
+
   // if required, flip the endianness of the bytes
-  if ( this._nativeLittleEndian != this._littleEndian ) {
+  if (this._nativeLittleEndian != this._littleEndian) {
+
     // we need to flip here since the format doesn't match the native endianness
     _bytes = this.flipEndianness(_bytes, _chunkSize);
+
   }
-  if ( chunks == 1 ) {
+
+  if (chunks == 1) {
+
     // if only one chunk was requested, just return one value
     return _bytes[0];
+
   }
+
   // return the byte array
   return _bytes;
+
 };
 
 /**
@@ -261,3 +284,67 @@ X.io.parser.prototype.flipEndianness = function(array, chunkSize) {
   }
   return array;
 };
+
+
+/**
+ * Reslice a data stream and create a 3D array.
+ *
+ * @param {!*} dimensions
+ * @param {!*} data 
+ * @return {!Array} The volume data as a 3D Array.
+ */
+X.io.parser.prototype.reslice = function(dimensions, data) {
+
+  X.TIMER(this._classname + '.reslice');
+
+  // allocate and fill volume
+  // rows, cols and slices (ijk dimensions)
+  var image = new Array(dimensions[0]);
+
+  // (fill volume)
+  var _nb_pix_per_slice = dimensions[1] * dimensions[2];
+  var _pix_value = 0;
+  var _i = 0;
+  var _j = 0;
+  var _k = 0;
+  var _data_pointer = 0;
+  for (_k = 0; _k < dimensions[0]; _k++) {
+
+    // get current slice
+    var _current_k = data.subarray(_k * (_nb_pix_per_slice), (_k + 1)
+        * _nb_pix_per_slice);
+    // now loop through all pixels of the current slice
+    _i = 0;
+    _j = 0;
+    _data_pointer = 0; // just a counter
+    
+    image[_k] = new Array(dimensions[1]);
+    for (_j = 0; _j < dimensions[1]; _j++) {
+
+    image[_k][_j] = new data.constructor(dimensions[2]);
+    for (_i = 0; _i < dimensions[2]; _i++) {
+
+        // go through row (i) first :)
+        // 1 2 3 4 5 6 ..
+        // .. .... .. . .
+        //
+        // not
+        // 1 .. ....
+        // 2 ...
+        // map pixel values
+        _pix_value = _current_k[_data_pointer];
+        image[_k][_j][_i] = _pix_value;
+        _data_pointer++;
+
+      }
+
+    }
+
+  }
+  
+  X.TIMERSTOP(this._classname + '.reslice');
+  
+  return image;
+  
+};  
+

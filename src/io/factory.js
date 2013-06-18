@@ -371,7 +371,12 @@ X.io.factory_.prototype.get = function(id) {
 
   // grab the job
   var _job = this._jobs.get(id);
-
+  if (!_job) {
+    
+    throw new Error('Job ' + id + ' could not be found.');
+    
+  }
+  
   // check if this job is fully parsed yet
   if (_job._status != X.io.factory_.status.PARSE) {
 
