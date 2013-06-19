@@ -7,7 +7,7 @@ goog.require('Zlib.Gunzip');
 
 /**
  * Create a parser for .nii/.nii.gz files.
- * 
+ *
  * @constructor
  * @extends X.io.parser
  */
@@ -67,8 +67,8 @@ X.io.parserNII.prototype.parse = function(job) {
   this._data = _data;
 
   // dispatch parsing progress event
-  this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));  
-  
+  this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));
+
   // parse the header
   var _header = this.parse_header();
 
@@ -78,17 +78,20 @@ X.io.parserNII.prototype.parse = function(job) {
   // parse the image data
   var _image_data = this.parse_data(_header);
 
+  // convert to 8 bit
+  _image_data = this.toUint8(_image_data);
+
   // dispatch parsing progress event
   this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));
 
   // create IJK2RAS and RAS2IJK matrices
-  var _ijk2ras = this.create_IJK2RAS(_header); 
+  var _ijk2ras = this.create_IJK2RAS(_header);
   var _ras2ijk = goog.vec.Mat4.createFloat32();
   goog.vec.Mat4.invert(_ijk2ras, _ras2ijk);
-  
+
   // reslice the datastream
   var _image = this.reslice(_header['dim'].subarray(1,4), _image_data);
-  
+
   // dispatch parsing progress event
   this.dispatchEvent(new X.io.event.ParsingEvent(job, 40));
 
@@ -203,7 +206,7 @@ X.io.parserNII.prototype.parse_data = function(header) {
 
   // number of pixels in the volume
   var volsize = header['dim'][1] * header['dim'][2] * header['dim'][3];
-  
+
   // scan the pixels regarding the data type
   switch (header['datatype']) {
   case 2:
@@ -344,9 +347,9 @@ X.io.parserNII.prototype.create_IJK2RAS = function(header) {
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, sz[0], sz[1], sz[2], sz[3]);
 
   }
-  
+
   return IJKToRAS;
-  
+
 
 };
 

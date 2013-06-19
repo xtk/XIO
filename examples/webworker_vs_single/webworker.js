@@ -8,7 +8,15 @@ self.onmessage = function(e) {
   X.io.load(_file);
 
   X.io.oncomplete = function() {
-    self.postMessage(X.io.get(_file));
+
+    var _output = X.io.get(_file);
+    var _header = _output.header;
+    var _slices = _output.data.image;
+
+    self.postMessage(_slices, _slices);
+
+
+
   };
 
 };

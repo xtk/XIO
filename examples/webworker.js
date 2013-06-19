@@ -3,20 +3,31 @@ importScripts('../bin/xio.js');
 
 self.onmessage = function(e) {
 
-  var _file = e.data;
+  var _cmd = e.data.cmd;
+  var _what = e.data.what;
+  var _value = e.data.value;
 
-  X.io.load(_file);
+  if (_cmd == 'load') {
 
-  X.io.oncomplete = function() {
-    self.postMessage(X.io.get(_file));
-  };
+    X.io.load(_what);
 
-//  X.io.onloading = function(id, progress) {
-//
-//    if (!id) {
-//      self.postMessage(progress);
-//    }
-//
-//  };
+    X.io.oncomplete = function() {
+
+      var _output = X.io.get(_what);
+      var _header = _output.header;
+
+      self.postMessage({cmd:'done', what:'header', value:_header});
+
+    };
+
+  } else if (_cmd == 'get') {
+
+    var _output = X.io.get(_what);
+    var _slices = _output.data.image;
+
+    self.postMessage(_slices[_value], [_slices[_value]]);
+
+  }
+
 
 };

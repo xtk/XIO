@@ -16,7 +16,7 @@ goog.require('X.io.events');
 
 /**
  * Create a parser for binary or ascii data.
- * 
+ *
  * @constructor
  * @extends X.io.base
  * @export
@@ -38,7 +38,7 @@ X.io.parser = function() {
 
   /**
    * The data.
-   * 
+   *
    * @type {?ArrayBuffer}
    * @protected
    */
@@ -46,7 +46,7 @@ X.io.parser = function() {
 
   /**
    * The pointer to the current byte.
-   * 
+   *
    * @type {!number}
    * @protected
    */
@@ -55,7 +55,7 @@ X.io.parser = function() {
   /**
    * The native endianness flag. Based on
    * https://github.com/kig/DataStream.js/blob/master/DataStream.js
-   * 
+   *
    * @type {!boolean}
    * @protected
    */
@@ -63,7 +63,7 @@ X.io.parser = function() {
 
   /**
    * The data-specific endianness flag.
-   * 
+   *
    * @type {!boolean}
    * @protected
    */
@@ -71,7 +71,7 @@ X.io.parser = function() {
 
   /**
    * The min value of the last parsing attempt.
-   * 
+   *
    * @type {!number}
    * @protected
    */
@@ -79,7 +79,7 @@ X.io.parser = function() {
 
   /**
    * The max value of the last parsing attempt.
-   * 
+   *
    * @type {!number}
    * @protected
    */
@@ -93,7 +93,7 @@ goog.inherits(X.io.parser, X.io.base);
 /**
  * Parse data. When complete, a
  * X.io.parser.ModifiedEvent is fired.
- * 
+ *
  * @param {!X.io.job} job
  * @throws {Error} An exception if something goes wrong.
  * @export
@@ -111,7 +111,7 @@ X.io.parser.prototype.parse = function(job) {
 
 /**
  * Get the min and max values of an array.
- * 
+ *
  * @param {!Array} data The data array to analyze.
  * @return {!Array} An array with length 2 containing the [min, max] values.
  * @export
@@ -135,7 +135,7 @@ X.io.parser.prototype.arrayMinMax = function(data) {
  * Create a string from a bunch of UChars. This replaces a
  * String.fromCharCode.apply call and therefor supports more platforms (like the
  * Android stock browser).
- * 
+ *
  * @param {!Array|Uint8Array} array The Uint8Array.
  * @param {?number=} start The start position. If undefined, use the whole
  *            array.
@@ -170,7 +170,7 @@ X.io.parser.prototype.parseChars = function(array, start, end) {
 
 /**
  * Jump to a position in the byte stream.
- * 
+ *
  * @param {!number} position The new offset.
  * @export
  */
@@ -181,7 +181,7 @@ X.io.parser.prototype.jumpTo = function(position) {
 
 /**
  * Scan binary data relative to the internal position in the byte stream.
- * 
+ *
  * @param {!string} type The data type to scan, f.e.
  *            'uchar','schar','ushort','sshort','uint','sint','float'
  * @param {!number=} chunks The number of chunks to scan. By default, 1.
@@ -266,7 +266,7 @@ X.io.parser.prototype.scan = function(type, chunks) {
 /**
  * Flips typed array endianness in-place. Based on
  * https://github.com/kig/DataStream.js/blob/master/DataStream.js.
- * 
+ *
  * @param {!Object} array Typed array to flip.
  * @param {!number} chunkSize The size of each element.
  * @return {!Object} The converted typed array.
@@ -286,11 +286,30 @@ X.io.parser.prototype.flipEndianness = function(array, chunkSize) {
 };
 
 
+X.io.parser.prototype.toUint8 = function(array) {
+
+  var _len = array.length;
+
+  var _max = this.arrayMinMax(array)[1];
+
+  var _output = new Uint8Array(_len);
+
+  for( var i=0; i<_len; i++) {
+
+    _output[i] = 255 * (array[i] / _max);
+
+  }
+
+  return _output;
+
+};
+
+
 /**
  * Reslice a data stream and create a 3D array.
  *
  * @param {!*} dimensions
- * @param {!*} data 
+ * @param {!*} data
  * @return {!Array} The volume data as a 3D Array.
  */
 X.io.parser.prototype.reslice = function(dimensions, data) {
@@ -299,52 +318,60 @@ X.io.parser.prototype.reslice = function(dimensions, data) {
 
   // allocate and fill volume
   // rows, cols and slices (ijk dimensions)
-  var image = new Array(dimensions[0]);
+  //var image = new Array(dimensions[0]);
 
   // (fill volume)
-  var _nb_pix_per_slice = dimensions[1] * dimensions[2];
-  var _pix_value = 0;
-  var _i = 0;
-  var _j = 0;
+  var _nb_pix_per_slice = dimensions[0] * dimensions[1];
+
+  var slices = new Array(dimensions[2]);
+
+  //var _pix_value = 0;
+  //var _i = 0;
+  //var _j = 0;
   var _k = 0;
-  var _data_pointer = 0;
-  for (_k = 0; _k < dimensions[0]; _k++) {
+  //var _data_pointer = 0;
+  for (_k = 0; _k < dimensions[2]; _k++) {
 
     // get current slice
-    var _current_k = data.subarray(_k * (_nb_pix_per_slice), (_k + 1)
-        * _nb_pix_per_slice);
-    // now loop through all pixels of the current slice
-    _i = 0;
-    _j = 0;
-    _data_pointer = 0; // just a counter
-    
-    image[_k] = new Array(dimensions[1]);
-    for (_j = 0; _j < dimensions[1]; _j++) {
+    //var _current_k = data.subarray(_k * (_nb_pix_per_slice), (_k + 1)
+//        * _nb_pix_per_slice);
 
-    image[_k][_j] = new data.constructor(dimensions[2]);
-    for (_i = 0; _i < dimensions[2]; _i++) {
+    //slices[_k] = _current_k.buffer;
+    slices[_k] = data.buffer.slice(_k * (_nb_pix_per_slice), (_k + 1)* _nb_pix_per_slice);
 
-        // go through row (i) first :)
-        // 1 2 3 4 5 6 ..
-        // .. .... .. . .
-        //
-        // not
-        // 1 .. ....
-        // 2 ...
-        // map pixel values
-        _pix_value = _current_k[_data_pointer];
-        image[_k][_j][_i] = _pix_value;
-        _data_pointer++;
-
-      }
-
-    }
+//    // now loop through all pixels of the current slice
+//    _i = 0;
+//    _j = 0;
+//    _data_pointer = 0; // just a counter
+//
+//    image[_k] = new Array(dimensions[1]);
+//    for (_j = 0; _j < dimensions[1]; _j++) {
+//
+//    image[_k][_j] = new data.constructor(dimensions[2]);
+//    for (_i = 0; _i < dimensions[2]; _i++) {
+//
+//        // go through row (i) first :)
+//        // 1 2 3 4 5 6 ..
+//        // .. .... .. . .
+//        //
+//        // not
+//        // 1 .. ....
+//        // 2 ...
+//        // map pixel values
+//        _pix_value = _current_k[_data_pointer];
+//        image[_k][_j][_i] = _pix_value;
+//        _data_pointer++;
+//
+//      }
+//
+//    }
 
   }
-  
+
   X.TIMERSTOP(this._classname + '.reslice');
-  
-  return image;
-  
-};  
+
+  //return image;
+  return slices;
+
+};
 
