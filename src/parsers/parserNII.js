@@ -7,7 +7,7 @@ goog.require('Zlib.Gunzip');
 
 /**
  * Create a parser for .nii/.nii.gz files.
- * 
+ *
  * @constructor
  * @extends X.io.parser
  */
@@ -43,14 +43,14 @@ X.io.parserNII.prototype.parse = function(job) {
 
   // check if this data is compressed, then this int != 348
   var _compressionCheck = -1;
-  if ( typeof DataView == 'undefined' ) {
+  if (typeof DataView == 'undefined') {
     _compressionCheck = new Int32Array(_data, 0, 1)[0];
   } else {
     var dataview = new DataView(_data, 0);
     _compressionCheck = dataview.getInt32(0, true);
   }
 
-  if ( _compressionCheck != 348 ) {
+  if (_compressionCheck != 348) {
 
     // we need to decompress the datastream
 
@@ -78,7 +78,7 @@ X.io.parserNII.prototype.parse = function(job) {
   // parse the image data
   var _image_data = this.parse_data(_header);
 
-  if ( X.io.uint8 ) {
+  if (eval('X.io.uint8')) {
     // convert to 8 bit (needed for webgl textures)
     _image_data = this.toUint8(_image_data);
   }
@@ -99,9 +99,9 @@ X.io.parserNII.prototype.parse = function(job) {
 
   // update the data of this job
   job._data = {
-    'header' : _header,
-    'data' : {
-      'image' : _image
+    'header': _header,
+    'data': {
+      'image': _image
     }
   };
 
@@ -118,79 +118,79 @@ X.io.parserNII.prototype.parse_header = function() {
   // the header fields of the official NIfTI-1 format
   // see http://nifti.nimh.nih.gov/pub/dist/src/niftilib/nifti1.h
   var header = {
-    'sizeof_hdr' : this.scan('uint'),
-    'data_type' : this.scan('uchar', 10), /* !< ++UNUSED++ *//*
-                                                               * char
-                                                               * data_type[10];
-                                                               */
-    'db_name' : this.scan('uchar', 18), /* !< ++UNUSED++ *//* char db_name[18]; */
-    'extents' : this.scan('uint'), /* !< ++UNUSED++ *//* int extents; */
-    'session_error' : this.scan('ushort'), /* !< ++UNUSED++ *//*
+    'sizeof_hdr': this.scan('uint'),
+    'data_type': this.scan('uchar', 10), /* !< ++UNUSED++ *//*
+                                                             * char
+                                                             * data_type[10];
+                                                             */
+    'db_name': this.scan('uchar', 18), /* !< ++UNUSED++ *//* char db_name[18]; */
+    'extents': this.scan('uint'), /* !< ++UNUSED++ *//* int extents; */
+    'session_error': this.scan('ushort'), /* !< ++UNUSED++ *//*
                                                                * short
                                                                * session_error;
                                                                */
-    'regular' : this.scan('uchar'), /* !< ++UNUSED++ *//* char regular; */
-    'dim_info' : this.scan('uchar'),/* !< MRI slice ordering. *//*
+    'regular': this.scan('uchar'), /* !< ++UNUSED++ *//* char regular; */
+    'dim_info': this.scan('uchar'),/* !< MRI slice ordering. *//*
                                                                  * char
                                                                  * hkey_un0;
                                                                  */
-    'dim' : this.scan('ushort', 8), // *!< Data array dimensions.*/ /* short
+    'dim': this.scan('ushort', 8), // *!< Data array dimensions.*/ /* short
     // dim[8]; */
-    'intent_p1' : this.scan('float'), // *!< 1st intent parameter. */ /* short
+    'intent_p1': this.scan('float'), // *!< 1st intent parameter. */ /* short
     // unused8; */
-    'intent_p2' : this.scan('float'), // *!< 2nd intent parameter. */ /* short
+    'intent_p2': this.scan('float'), // *!< 2nd intent parameter. */ /* short
     // unused10; */
-    'intent_p3' : this.scan('float'), // *!< 3rd intent parameter. */ /* short
+    'intent_p3': this.scan('float'), // *!< 3rd intent parameter. */ /* short
     // unused12; */
-    'intent_code' : this.scan('ushort'), // *!< NIFTI_INTENT_* code. */ /*
+    'intent_code': this.scan('ushort'), // *!< NIFTI_INTENT_* code. */ /*
     // short unused14; */
-    'datatype' : this.scan('ushort'), // *!< Defines data type! */ /* short
+    'datatype': this.scan('ushort'), // *!< Defines data type! */ /* short
     // datatype; */
-    'bitpix' : this.scan('ushort'), // *!< Number bits/voxel. */ /* short
+    'bitpix': this.scan('ushort'), // *!< Number bits/voxel. */ /* short
     // bitpix; */
-    'slice_start' : this.scan('ushort'), // *!< First slice index. */ /* short
+    'slice_start': this.scan('ushort'), // *!< First slice index. */ /* short
     // dim_un0; */
-    'pixdim' : this.scan('float', 8), // *!< Grid spacings. */ /* float
+    'pixdim': this.scan('float', 8), // *!< Grid spacings. */ /* float
     // pixdim[8]; */
-    'vox_offset' : this.scan('float'), // *!< Offset into .nii file */ /* float
+    'vox_offset': this.scan('float'), // *!< Offset into .nii file */ /* float
     // vox_offset; */
-    'scl_slope' : this.scan('float'), // *!< Data scaling: slope. */ /* float
+    'scl_slope': this.scan('float'), // *!< Data scaling: slope. */ /* float
     // funused1; */
-    'scl_inter' : this.scan('float'), // *!< Data scaling: offset. */ /* float
+    'scl_inter': this.scan('float'), // *!< Data scaling: offset. */ /* float
     // funused2; */
-    'slice_end' : this.scan('ushort'), // *!< Last slice index. */ /* float
+    'slice_end': this.scan('ushort'), // *!< Last slice index. */ /* float
     // funused3; */
-    'slice_code' : this.scan('uchar'), // *!< Slice timing order. */
-    'xyzt_units' : this.scan('uchar'), // *!< Units of pixdim[1..4] */
-    'cal_max' : this.scan('float'), // *!< Max display intensity */ /* float
+    'slice_code': this.scan('uchar'), // *!< Slice timing order. */
+    'xyzt_units': this.scan('uchar'), // *!< Units of pixdim[1..4] */
+    'cal_max': this.scan('float'), // *!< Max display intensity */ /* float
     // cal_max; */
-    'cal_min' : this.scan('float'), // *!< Min display intensity */ /* float
+    'cal_min': this.scan('float'), // *!< Min display intensity */ /* float
     // cal_min; */
-    'slice_duration' : this.scan('float'), // *!< Time for 1 slice. */ /* float
+    'slice_duration': this.scan('float'), // *!< Time for 1 slice. */ /* float
     // compressed; */
-    'toffset' : this.scan('float'), // *!< Time axis shift. */ /* float
+    'toffset': this.scan('float'), // *!< Time axis shift. */ /* float
     // verified; */
-    'glmax' : this.scan('uint', 1),/* !< ++UNUSED++ *//* int glmax; */
-    'glmin' : this.scan('uint', 1), /* !< ++UNUSED++ *//* int glmin; */
-    'descrip' : this.scan('uchar', 80), // *!< any text you like. */ /* char
+    'glmax': this.scan('uint', 1),/* !< ++UNUSED++ *//* int glmax; */
+    'glmin': this.scan('uint', 1), /* !< ++UNUSED++ *//* int glmin; */
+    'descrip': this.scan('uchar', 80), // *!< any text you like. */ /* char
     // descrip[80]; */
-    'aux_file' : this.scan('uchar', 24), // *!< auxiliary filename. */ /* char
+    'aux_file': this.scan('uchar', 24), // *!< auxiliary filename. */ /* char
     // aux_file[24]; */
-    'qform_code' : this.scan('ushort'), // *!< NIFTI_XFORM_* code. */ /*-- all
+    'qform_code': this.scan('ushort'), // *!< NIFTI_XFORM_* code. */ /*-- all
     // ANALYZE 7.5 ---*/
-    'sform_code' : this.scan('ushort'), // *!< NIFTI_XFORM_* code. */ /* fields
+    'sform_code': this.scan('ushort'), // *!< NIFTI_XFORM_* code. */ /* fields
     // below here */
-    'quatern_b' : this.scan('float'), // *!< Quaternion b param. */
-    'quatern_c' : this.scan('float'), // *!< Quaternion c param. */
-    'quatern_d' : this.scan('float'), // *!< Quaternion d param. */
-    'qoffset_x' : this.scan('float'), // *!< Quaternion x shift. */
-    'qoffset_y' : this.scan('float'), // *!< Quaternion y shift. */
-    'qoffset_z' : this.scan('float'), // *!< Quaternion z shift. */
-    'srow_x' : this.scan('float', 4), // *!< 1st row affine transform. */
-    'srow_y' : this.scan('float', 4), // *!< 2nd row affine transform. */
-    'srow_z' : this.scan('float', 4), // *!< 3rd row affine transform. */
-    'intent_name' : this.scan('uchar', 16), // *!< 'name' or meaning of data. */
-    'magic' : this.scan('uchar', 4)
+    'quatern_b': this.scan('float'), // *!< Quaternion b param. */
+    'quatern_c': this.scan('float'), // *!< Quaternion c param. */
+    'quatern_d': this.scan('float'), // *!< Quaternion d param. */
+    'qoffset_x': this.scan('float'), // *!< Quaternion x shift. */
+    'qoffset_y': this.scan('float'), // *!< Quaternion y shift. */
+    'qoffset_z': this.scan('float'), // *!< Quaternion z shift. */
+    'srow_x': this.scan('float', 4), // *!< 1st row affine transform. */
+    'srow_y': this.scan('float', 4), // *!< 2nd row affine transform. */
+    'srow_z': this.scan('float', 4), // *!< 3rd row affine transform. */
+    'intent_name': this.scan('uchar', 16), // *!< 'name' or meaning of data. */
+    'magic': this.scan('uchar', 4)
   // *!< MUST be "ni1\0" or "n+1\0". */
   };
 
@@ -264,7 +264,7 @@ X.io.parserNII.prototype.create_IJK2RAS = function(header) {
   var _spaceorientation = [];
 
   // 3 known cases
-  if ( header['qform_code'] == 0 ) {
+  if (header['qform_code'] == 0) {
 
     // fill IJKToRAS
     goog.vec.Mat4.setRowValues(IJKToRAS, 0, header['pixdim'][1], 0, 0, 0);
@@ -281,7 +281,7 @@ X.io.parserNII.prototype.create_IJK2RAS = function(header) {
     _spaceorientation.push(0);
     _spaceorientation.push(header['pixdim'][3]);
 
-  } else if ( header['qform_code'] > 0 ) {
+  } else if (header['qform_code'] > 0) {
 
     // https://github.com/Kitware/ITK/blob/master/Modules/IO/NIFTI/src/itkNiftiImageIO.cxx
     // from ITK/Modules/ThirdParty/NIFTI/src/nifti/niftilib/nifti1_io.c
@@ -292,7 +292,7 @@ X.io.parserNII.prototype.create_IJK2RAS = function(header) {
 
     // compute a
     a = 1.0 - (b * b + c * c + d * d);
-    if ( a < 0.0000001 ) { /* special case */
+    if (a < 0.0000001) { /* special case */
       a = 1.0 / Math.sqrt(b * b + c * c + d * d);
       b *= a;
       c *= a;
@@ -303,32 +303,32 @@ X.io.parserNII.prototype.create_IJK2RAS = function(header) {
     }
 
     // scaling factors
-    if ( header['pixdim'][1] > 0.0 ) {
+    if (header['pixdim'][1] > 0.0) {
       xd = header['pixdim'][1];
     }
 
-    if ( header['pixdim'][2] > 0.0 ) {
+    if (header['pixdim'][2] > 0.0) {
       yd = header['pixdim'][2];
     }
 
-    if ( header['pixdim'][2] > 0.0 ) {
+    if (header['pixdim'][2] > 0.0) {
       zd = header['pixdim'][3];
     }
 
     // qfac left handed
-    if ( header['pixdim'][0] < 0.0 ) {
+    if (header['pixdim'][0] < 0.0) {
       zd = -zd;
     }
 
     // fill IJKToRAS
 
-    goog.vec.Mat4.setRowValues(IJKToRAS, 0, (a * a + b * b - c * c - d * d)
-        * xd, 2 * (b * c - a * d) * yd, 2 * (b * d + a * c) * zd, qx);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 1, 2 * (b * c + a * d) * xd, (a * a
-        + c * c - b * b - d * d)
-        * yd, 2 * (c * d - a * b) * zd, qy);
-    goog.vec.Mat4.setRowValues(IJKToRAS, 2, 2 * (b * d - a * c) * xd, 2
-        * (c * d + a * b) * yd, (a * a + d * d - c * c - b * b) * zd, qz);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 0, (a * a + b * b - c * c - d * d) *
+        xd, 2 * (b * c - a * d) * yd, 2 * (b * d + a * c) * zd, qx);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 1, 2 * (b * c + a * d) * xd, (a * a +
+        c * c - b * b - d * d) *
+        yd, 2 * (c * d - a * b) * zd, qy);
+    goog.vec.Mat4.setRowValues(IJKToRAS, 2, 2 * (b * d - a * c) * xd, 2 *
+        (c * d + a * b) * yd, (a * a + d * d - c * c - b * b) * zd, qz);
 
     _spaceorientation.push((a * a + b * b - c * c - d * d) * xd);
     _spaceorientation.push(2 * (b * c + a * d) * xd);
@@ -340,7 +340,7 @@ X.io.parserNII.prototype.create_IJK2RAS = function(header) {
     _spaceorientation.push(2 * (c * d + a * b) * yd);
     _spaceorientation.push((a * a + d * d - c * c - b * b) * zd);
 
-  } else if ( header['sform_code'] > 0 ) {
+  } else if (header['sform_code'] > 0) {
 
     var sx = header['srow_x'], sy = header['srow_y'], sz = header['srow_z'];
     // fill IJKToRAS

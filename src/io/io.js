@@ -4,7 +4,7 @@ goog.require('X');
 
 /**
  * The IO namespace and singleton access to all X.io-functions and -parsers.
- * 
+ *
  * @const
  * @namespace
  */
@@ -25,6 +25,10 @@ X.io = {
 // }
 // });
 
+/**
+ * Convert parsed volume textures to Uint8 format
+ * to enable direct use as WebGL textures.
+ */
 X.io.uint8 = true;
 
 X.io.onloading = function(id, progress) {
