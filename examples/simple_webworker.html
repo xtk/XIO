@@ -1,0 +1,27 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+var worker = new Worker('webworker.js');
+
+worker.onmessage = function(e) {
+
+  var _slices = e.data;
+
+  // here grab the first slice
+  console.log('first slice:', new Uint8Array(_slices[0]));
+  
+  
+};
+
+worker.postMessage('http://x.babymri.org/?23/template.nii.gz');
+
+</script>
+
+</head>
+
+<body>
+
+</body>
+</html>

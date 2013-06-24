@@ -25,6 +25,8 @@ X.io = {
 // }
 // });
 
+X.io.uint8 = true;
+
 X.io.onloading = function(id, progress) {
 
   // do nothing, should be overloaded
@@ -51,6 +53,7 @@ X.io.oncomplete = function() {
 };
 
 goog.exportSymbol('X.io.version', X.io.version);
+goog.exportSymbol('X.io.uint8', X.io.uint8);
 goog.exportSymbol('X.io.onloading', X.io.onloading);
 goog.exportSymbol('X.io.onload', X.io.onload);
 goog.exportSymbol('X.io.onparsing', X.io.onparsing);

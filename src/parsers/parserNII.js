@@ -7,7 +7,7 @@ goog.require('Zlib.Gunzip');
 
 /**
  * Create a parser for .nii/.nii.gz files.
- *
+ * 
  * @constructor
  * @extends X.io.parser
  */
@@ -78,8 +78,10 @@ X.io.parserNII.prototype.parse = function(job) {
   // parse the image data
   var _image_data = this.parse_data(_header);
 
-  // convert to 8 bit
-  _image_data = this.toUint8(_image_data);
+  if ( X.io.uint8 ) {
+    // convert to 8 bit (needed for webgl textures)
+    _image_data = this.toUint8(_image_data);
+  }
 
   // dispatch parsing progress event
   this.dispatchEvent(new X.io.event.ParsingEvent(job, 20));
@@ -90,7 +92,7 @@ X.io.parserNII.prototype.parse = function(job) {
   goog.vec.Mat4.invert(_ijk2ras, _ras2ijk);
 
   // reslice the datastream
-  var _image = this.reslice(_header['dim'].subarray(1,4), _image_data);
+  var _image = this.reslice(_header['dim'].subarray(1, 4), _image_data);
 
   // dispatch parsing progress event
   this.dispatchEvent(new X.io.event.ParsingEvent(job, 40));
@@ -133,51 +135,51 @@ X.io.parserNII.prototype.parse_header = function() {
                                                                  * hkey_un0;
                                                                  */
     'dim' : this.scan('ushort', 8), // *!< Data array dimensions.*/ /* short
-                                    // dim[8]; */
+    // dim[8]; */
     'intent_p1' : this.scan('float'), // *!< 1st intent parameter. */ /* short
-                                      // unused8; */
+    // unused8; */
     'intent_p2' : this.scan('float'), // *!< 2nd intent parameter. */ /* short
-                                      // unused10; */
+    // unused10; */
     'intent_p3' : this.scan('float'), // *!< 3rd intent parameter. */ /* short
-                                      // unused12; */
+    // unused12; */
     'intent_code' : this.scan('ushort'), // *!< NIFTI_INTENT_* code. */ /*
-                                          // short unused14; */
+    // short unused14; */
     'datatype' : this.scan('ushort'), // *!< Defines data type! */ /* short
-                                      // datatype; */
+    // datatype; */
     'bitpix' : this.scan('ushort'), // *!< Number bits/voxel. */ /* short
-                                    // bitpix; */
+    // bitpix; */
     'slice_start' : this.scan('ushort'), // *!< First slice index. */ /* short
-                                          // dim_un0; */
+    // dim_un0; */
     'pixdim' : this.scan('float', 8), // *!< Grid spacings. */ /* float
-                                      // pixdim[8]; */
+    // pixdim[8]; */
     'vox_offset' : this.scan('float'), // *!< Offset into .nii file */ /* float
-                                        // vox_offset; */
+    // vox_offset; */
     'scl_slope' : this.scan('float'), // *!< Data scaling: slope. */ /* float
-                                      // funused1; */
+    // funused1; */
     'scl_inter' : this.scan('float'), // *!< Data scaling: offset. */ /* float
-                                      // funused2; */
+    // funused2; */
     'slice_end' : this.scan('ushort'), // *!< Last slice index. */ /* float
-                                        // funused3; */
+    // funused3; */
     'slice_code' : this.scan('uchar'), // *!< Slice timing order. */
     'xyzt_units' : this.scan('uchar'), // *!< Units of pixdim[1..4] */
     'cal_max' : this.scan('float'), // *!< Max display intensity */ /* float
-                                    // cal_max; */
+    // cal_max; */
     'cal_min' : this.scan('float'), // *!< Min display intensity */ /* float
-                                    // cal_min; */
+    // cal_min; */
     'slice_duration' : this.scan('float'), // *!< Time for 1 slice. */ /* float
-                                            // compressed; */
+    // compressed; */
     'toffset' : this.scan('float'), // *!< Time axis shift. */ /* float
-                                    // verified; */
+    // verified; */
     'glmax' : this.scan('uint', 1),/* !< ++UNUSED++ *//* int glmax; */
     'glmin' : this.scan('uint', 1), /* !< ++UNUSED++ *//* int glmin; */
     'descrip' : this.scan('uchar', 80), // *!< any text you like. */ /* char
-                                        // descrip[80]; */
+    // descrip[80]; */
     'aux_file' : this.scan('uchar', 24), // *!< auxiliary filename. */ /* char
-                                          // aux_file[24]; */
+    // aux_file[24]; */
     'qform_code' : this.scan('ushort'), // *!< NIFTI_XFORM_* code. */ /*-- all
-                                        // ANALYZE 7.5 ---*/
+    // ANALYZE 7.5 ---*/
     'sform_code' : this.scan('ushort'), // *!< NIFTI_XFORM_* code. */ /* fields
-                                        // below here */
+    // below here */
     'quatern_b' : this.scan('float'), // *!< Quaternion b param. */
     'quatern_c' : this.scan('float'), // *!< Quaternion c param. */
     'quatern_d' : this.scan('float'), // *!< Quaternion d param. */
@@ -349,7 +351,6 @@ X.io.parserNII.prototype.create_IJK2RAS = function(header) {
   }
 
   return IJKToRAS;
-
 
 };
 
