@@ -1,0 +1,164 @@
+<!-- 
+
+THIS IS BROKEN RIGHT NOW.
+
+ -->
+
+<html>
+<head>
+
+<!-- <script type="text/javascript" src="../bin/xio.js"></script> -->
+<script type="text/javascript"
+	src="../../X/lib/google-closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../../X/xtk-deps.js"></script>
+
+
+<script type="text/javascript">
+  goog.require('X.object');
+  goog.require('X.renderer2D');
+  goog.require('X.renderer3D');
+  goog.require('X.slice');
+
+  var _header = null;
+  var _slices = null;
+  var ren2d = null;
+  var vol_added = false;
+  var _slice_number;
+
+  function load_data() {
+
+    worker1 = new Worker('webworker.js');
+
+    worker1.onmessage = function(e) {
+
+      if ( e.data.cmd ) {
+
+        var _cmd = e.data.cmd;
+        var _what = e.data.what;
+        var _value = e.data.value;
+
+        if ( _cmd == 'done' ) {
+
+          if ( _what == 'header' ) {
+            _header = _value;
+
+            _slice_number = Math.floor(_header.dim[3] / 2);
+
+            get_slice(_slice_number);
+
+          }
+
+        }
+
+      } else {
+
+        if ( !ren2d ) {
+          rend();
+
+          vol = new X.volume();
+          vol._dimensions = _header.dim.subarray(1, 4);
+          vol._normcosine = [ [ 0, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];
+
+          var _slicesX = new X.object();
+          _slicesX._children = [ new X.object() ];
+          var _slicesY = new X.object();
+          _slicesY._children = [ new X.object() ];
+          var _slicesZ = new X.object();
+
+          _slicesZ._children = new Array(_header.dim[3]);
+          var len = _header.dim[3];
+          for ( var j = 0; j < len; j++) {
+
+            var slice = new X.slice();
+
+            slice._width = _header.dim[1];
+            slice._height = _header.dim[2];
+
+            slice.create_();
+
+            _slicesZ._children[j] = slice;
+          }
+
+          vol._children = [ _slicesX, _slicesY, _slicesZ ];
+          vol._slicesZ = _slicesZ;
+
+        }
+
+        _slices = e.data;
+
+        /*     slice.texture._rawData = new Uint8Array(_slices);
+            slice.texture._rawDataWidth = _header.dim[1];
+            slice.texture._rawDataHeight = _header.dim[2]; */
+
+        //slice = new X.slice();
+        slice = vol.children[2]._children[_slice_number];
+        slice.texture._rawData = new Uint8Array(_slices);
+        console.log(slice.texture._rawData[0]);
+        slice.texture._rawDataWidth = _header.dim[1];
+        slice.texture._rawDataHeight = _header.dim[2];
+        slice.texture._dirty = true;
+        slice.modified();
+
+        vol.indexZ = _slice_number;
+
+        if ( !vol_added ) {
+          ren2d.add(vol);
+          vol_added = true;
+
+          ren2d.render();
+
+        }
+
+      }
+
+    };
+
+    worker1.postMessage({
+      cmd : 'load',
+      what : 'http://x.babymri.org/?23/template.nii',
+      value : null
+    });
+
+  };
+
+  function get_slice(i) {
+
+    worker1.postMessage({
+      cmd : 'get',
+      what : 'http://x.babymri.org/?23/template.nii',
+      value : i
+    });
+
+  }
+
+  function rend() {
+
+    ren2d = new X.renderer2D();
+    ren2d.orientation = 'AXIAL';
+    ren2d.init();
+
+    ren2d.onScroll = function() {
+
+      _slice_number = Math.floor(vol.indexZ);
+
+      if ( !vol._slicesZ.children[_slice_number].texture ) {
+        console.log('newslice');
+        get_slice(_slice_number);
+        
+      }
+
+    }
+
+  }
+
+  window.onload = function() {
+
+    load_data();
+  }
+</script>
+
+</head>
+
+<body>
+</body>
+</html>

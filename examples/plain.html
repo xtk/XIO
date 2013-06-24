@@ -11,6 +11,10 @@
  */
     console.time('everything');
     
+    // BY DEFAULT, XIO RETURNS UINT8 VERSION (8BIT) OF THE PARSED TEXTURES
+    // SET THIS TO FALSE TO GET THE REAL DATA
+    //X.io.uint8 = false;
+ 
     //
     // SETUP FILE LOADING
     //
@@ -84,7 +88,11 @@
       if (id) {
         console.log('Finished parsing', id);
         
-        console.log('Data for ', id, ':', X.io.get(id));
+        var _data = X.io.get(id);
+        
+        console.log('Data for ', id, ':', _data);
+        
+        console.log('First slice', new Uint8Array(_data.data.image[0]));
         
       } else {
         console.log('Everything parsed');

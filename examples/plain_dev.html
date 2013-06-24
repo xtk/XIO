@@ -8,7 +8,7 @@
   function load_data() {
 
     //X.io.load(['http://x.babymri.org/?avf.nii','http://x.babymri.org/?streamlineres.trk']);
-
+    
     X.io.load('http://x.babymri.org/?avf.nii');
     X.io.load('http://x.babymri.org/?vol.nii');
     X.io.load('http://x.babymri.org/?T1sub.nii');
@@ -52,7 +52,11 @@
       if (id) {
         console.log('Finished parsing', id);
         
-        console.log('Data for ',id,':',X.io.get(id));
+        _data = X.io.get(id);
+        
+        console.log('Data for ',id,':',_data);
+        
+        console.log('First slice', new Uint8Array(_data.data.image[0]));
         
       } else {
         console.log('Everything parsed');
