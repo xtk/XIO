@@ -10,12 +10,12 @@ config['xio_development'] = {
   libs : [ "lib/google-closure-library/closure/goog/base.js",
       "lib/google-closure-library/closure/goog/deps.js", "xio-deps.js",
       "test/requires.js" ],
-  tests : [ 'test/parserNII-test.js', ]
+  tests : [ 'test/parserNII-test.js', 'test/parserFSM-test.js', ]
 };
 
 config['xio_build'] = {
   rootPath : "../",
   environment : "browser",
   libs : [ "bin/xio.js" ],
-  tests : [ 'test/parserNII-test.js', ]
+  tests : [ 'test/parserNII-test.js', 'test/parserFSM-test.js', ]
 };

@@ -5,6 +5,7 @@ goog.require('X.io.extensions');
 goog.require('X.io.events');
 goog.require('X.io.file');
 goog.require('X.io.job');
+goog.require('X.io.parserFSM');
 goog.require('X.io.parserNII');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrManager');
@@ -372,11 +373,11 @@ X.io.factory_.prototype.get = function(id) {
   // grab the job
   var _job = this._jobs.get(id);
   if (!_job) {
-    
+
     throw new Error('Job ' + id + ' could not be found.');
-    
+
   }
-  
+
   // check if this job is fully parsed yet
   if (_job._status != X.io.factory_.status.PARSE) {
 
