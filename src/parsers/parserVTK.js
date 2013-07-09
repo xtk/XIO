@@ -53,18 +53,17 @@ X.io.parserVTK.prototype.parse = function(job) {
 
   var data_as_array = _str.split('\n');
   var line_count = data_as_array.length;
-  var split = /[^ ]+/g;
+  var split = /[ ]+/;
 
   var header = {
-                'comments': '',
-                'name':'',
-                'file_type':'',
-                'data_set_type':'',
-                'vertex_count':'',
-                'points_type':'',
-                'face_type':'',
-                'face_count':''
-
+    'comments': '',
+    'name':'',
+    'file_type':'',
+    'data_set_type':'',
+    'vertex_count':'',
+    'points_type':'',
+    'face_type':'',
+    'face_count':''
   };
 
   var l = 0;
@@ -87,12 +86,12 @@ X.io.parserVTK.prototype.parse = function(job) {
   }
 
   // next one is the dataset type
-  header['dataset_type'] = data_as_array[l++].match(split)[1].toUpperCase();
+  header['dataset_type'] = data_as_array[l++].split(split)[1].toUpperCase();
 
   if (header['dataset_type'].trim() == 'POLYDATA'.trim()) {
 
     // next one is points
-    var points = data_as_array[l++].match(split);
+    var points = data_as_array[l++].split(split);
     if (points[0].toUpperCase().trim() != 'POINTS'.trim()) {
       throw new Error('Expecting POINTS at this point.');
     }
@@ -108,7 +107,7 @@ X.io.parserVTK.prototype.parse = function(job) {
     var vertices_added = 0;
     do {
 
-      var v = data_as_array[l++].trim().match(split);
+      var v = data_as_array[l++].trim().split(split);
       if (!v) {
         break;
       }
@@ -119,7 +118,7 @@ X.io.parserVTK.prototype.parse = function(job) {
     } while(vertices_added != header['vertex_count']*3);
 
     // next one might be a face type
-    var face_type = data_as_array[l++].match(split);
+    var face_type = data_as_array[l++].split(split);
     header['face_type'] = face_type[0].toUpperCase();
     header['face_count'] = parseInt(face_type[1], 10);
 
@@ -128,7 +127,7 @@ X.io.parserVTK.prototype.parse = function(job) {
     var faces_added = 0;
     do {
 
-      var f = data_as_array[l++].trim().match(split);
+      var f = data_as_array[l++].trim().split(split);
       if (!f) {
         break;
       }
