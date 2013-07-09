@@ -1,6 +1,7 @@
 goog.provide('X.io.extensions');
 
 goog.require('X.io');
+goog.require('X.io.parserFSA');
 goog.require('X.io.parserFSM');
 goog.require('X.io.parserNII');
 goog.require('goog.net.XhrIo.ResponseType');
@@ -46,6 +47,10 @@ X.io.extensions = {
   'ORIG' : {
     response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER,
     parser : X.io.parserFSM
+  },
+  'ANNOT' : {
+    response_type : goog.net.XhrIo.ResponseType.ARRAY_BUFFER,
+    parser : X.io.parserFSA
   }
 };
 

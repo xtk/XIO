@@ -1,0 +1,105 @@
+<html>
+<head>
+<script type="text/javascript"
+        src="../lib/google-closure-library/closure/goog/base.js"></script>
+<script type="text/javascript" src="../xio-deps.js"></script>
+<script type="text/javascript" src="../test/requires.js"></script>
+<script type="text/javascript">
+  function load_data() {
+
+    console.time('everything');
+ 
+    //
+    // SETUP FILE LOADING
+    //
+    // - loading starts immediately when X.io.load gets called
+    // - each X.io.load configures a job with single or multiple files 
+    // - the given URI is also the id of this job
+    X.io.load('aparc.a2009s.annot');
+    
+    
+    //
+    // ONLOADING CALLBACK
+    //
+    // gets executed when there is loading progress
+    //  a) with a passed id to track individual job loading progress
+    //  b) with id==null for the overall loading progress
+    //
+    X.io.onloading = function(id, percentage) {
+
+      if (!id) {
+        console.log('Loading', percentage);
+      }
+      
+    };
+
+    //
+    // ONLOAD CALLBACK
+    //
+    // gets executed when loading was completed
+    //  a) with a passed id for individual completion
+    //  b) with id==null for overall completion
+    //    
+    X.io.onload = function(id) {
+
+      if (id) {
+        console.log('Finished loading', id);
+      } else {
+        console.log('Everything loaded.');
+      }
+      
+    };
+    
+    //
+    // ONPARSING CALLBACK
+    //
+    // gets executed when there is parsing progress
+    //  a) with a passed id to track individual job parsing progress
+    //  b) with id==null for the overall parsing progress
+    //    
+    X.io.onparsing = function(id, percentage) {
+
+      if (!id) {
+        console.log('Parsing', percentage);
+      }
+      
+    };
+    
+    //
+    // ONPARSE CALLBACK
+    //
+    // gets executed when parsing was completed
+    //  a) with a passed id for individual completion
+    //  b) with id==null for overall completion
+    //        
+    X.io.onparse = function(id) {
+      
+      if (id) {
+        console.log('Finished parsing', id);
+      } else {
+        console.log('Everything parsed');
+      }
+      
+    };
+    
+    //
+    // ONCOMPLETE CALLBACK
+    //
+    // gets executed when everything was finished
+    //    
+    X.io.oncomplete = function() {
+
+      console.log('all done');
+      
+      console.timeEnd('everything');
+      
+      console.log('Data', X.io.get('aparc.a2009s.annot'));
+
+    };
+    
+
+  };
+</script>
+</head>
+<body></body>
+</html>
