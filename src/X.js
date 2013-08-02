@@ -98,6 +98,17 @@ X.TIMERSTOP = function(what) {
 
 };
 
+X.DEBUG = function(text) {
+
+  if (eval('X.DEV === undefined')) {
+    return;
+  }
+  
+  window.console.log(text);
+  
+};
+
+
 
 //make sure we don't overwrite a $ sign to ensure compatibility with jQuery
 var $ = window.$;
